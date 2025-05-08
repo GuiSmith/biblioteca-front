@@ -1,34 +1,30 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
 import './App.css'
+import './index.css';
+
+// Componentes
+import BarraDeNavegacao from '@componentes/BarraDeNavegacao';
+import LivrosLista from './paginas/livros/LivrosLista';
+
+import API from '@servicos/API';
 
 function App() {
-  const [count, setCount] = useState(0)
+
+  // Temporário, até criar tela e funções de login
+  API.definirToken('1b1d0428eec47d23b851d589f25db5f9d8b4b99e8e631fc8780dbfa4357a824a339a73b32e7c7571bfe0519bf0bbdde20722abb1b44ad635cfad5624a52b6279');
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <section className = 'app-container'>
+      <Router basename='/biblioteca-front'>
+        <BarraDeNavegacao />
+        <div className='page-wrapper'>
+          <Routes>
+            <Route path='/livros' element={<LivrosLista />} />
+          </Routes>
+        </div>
+      </Router>
+    </section>
   )
 }
 
