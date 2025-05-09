@@ -21,23 +21,20 @@ const LivrosLista = () => {
 
                 if (data.hasOwnProperty('mensagem')) {
                     toast(data.mensagem);
-
                 }
 
                 if (response.status == 204) return;
 
-                console.log(data);
                 setCartoes(
                     <div className='row'>
                         {data.map(livro => (
-                            <div key={livro.id} className='col-lg-3 m-2'>
+                            <div key={livro.id} className='col-lg-4'>
                                 <Cartao
                                     img={{
                                         src: livro.foto,
                                         alt: `Imagem: ${livro.titulo}`
                                     }}
                                     titulo={livro.titulo}
-                                    texto={livro.enredo}
                                 />
                             </div>
                         ))}
@@ -50,11 +47,13 @@ const LivrosLista = () => {
     }, []);
 
     return (
-        <>
+        <article>
             <h1>Livros Lista Iniciado</h1>
-            {cartoes}
+            <div className='container'>
+                {cartoes}
+            </div>
             <ToastContainer position='bottom-right' />
-        </>
+        </article>
     )
 }
 
