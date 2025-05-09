@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 
 import api from '@servicos/API';
 import Cartao from '@componentes/Cartao';
+import { listarAutores } from '@servicos/livro_autor';
 
 const LivrosLista = () => {
 
@@ -24,6 +25,11 @@ const LivrosLista = () => {
                 }
 
                 if (response.status == 204) return;
+
+                data.forEach(async livro => {
+                    // console.log(livro);
+                    console.log(await listarAutores(livro.id));
+                });
 
                 setCartoes(
                     <div className='row'>
