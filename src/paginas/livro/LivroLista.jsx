@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 
 import api from '@servicos/API';
 import Cartao from '@componentes/Cartao';
-import { listarAutores } from '@servicos/livro_autor';
+import { listarAutores } from '@servicos/livroAutor';
 import BotaoLink from '@componentes/BotaoLink';
 import BotaoAcao from '@componentes/BotaoAcao';
 
