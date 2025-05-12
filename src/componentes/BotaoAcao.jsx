@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Botao = ({ onClick = '', className = 'btn-secondary', label }) => {
+const Botao = ({ onClick = '', className = 'btn-secondary', label, disabled = false }) => {
 
     const stdClassName = 'btn';
 
@@ -16,8 +16,10 @@ const Botao = ({ onClick = '', className = 'btn-secondary', label }) => {
 
     return (
         <button
+            type='button'
             className={!onClick ? `${fullClassName} disabled` : fullClassName}
             onClick = {handleClick}
+            disabled={disabled}
         >
             {label}
         </button>
