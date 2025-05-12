@@ -1,0 +1,76 @@
+import { ToastContainer, toast } from 'react-toastify';
+import { useEffect, useState } from 'react';
+
+import api from '@servicos/API';
+import Cartao from '@componentes/Cartao';
+import { listarAutores } from '@servicos/livro_autor';
+import BotaoLink from '@componentes/BotaoLink';
+import BotaoAcao from '@componentes/BotaoAcao';
+
+const LivroLista = () => {
+
+    const endpoint = 'livro';
+
+    const completeUrl = `${api.apiUrl}/livro`;
+
+    const apiOptions = api.apiOptions('GET');
+
+    const [cartoes, setCartoes] = useState('');
+
+    useEffect(() => {
+        fetch(completeUrl, apiOptions)
+            .then(async response => {
+                const data = await response.json();
+
+                if (data.hasOwnProperty('mensagem')) {
+                    toast(data.mensagem);
+                }
+
+                if (response.status == 204) return;
+
+                setCartoes(
+                    <div className='row'>
+                        {data.map(async livro => {
+                            const autores = await listarAutores(livro.id);
+                            const nomeAutores = autores.reduce((acc, autor, index) => acc + (index > 0 ? ', ' : '') + autor.nome, '');
+                            const botoes = [
+                                <BotaoLink to={`/livros/${livro.id}`} label = 'Detalhes' className = 'btn-primary' />,
+                                <BotaoLink label = 'Emprestar' className = 'btn-success' />
+                            ];
+
+                            return (
+                                <div key={livro.id} className='col-lg-4'>
+                                    <Cartao img={{ src: livro.foto, alt: `Imagem: ${livro.titulo}` }} titulo={livro.titulo} botoes={botoes} >
+                                        <p>{`Autores: ${nomeAutores}`}</p>
+                                        {/* <p>{`Sinopse: ${livro.sinopse}`}</p> */}
+                                    </Cartao>
+                                </div>
+                            )
+                        })}
+                    </div>
+                )
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    }, []);
+
+    return (
+        <article>
+            <div className='container'>
+                <div className='d-flex gap-3 justify-content-center'>
+                    <BotaoAcao label='Fazer algo' />
+                    <BotaoAcao label='Fazer algo' />
+                    <BotaoAcao label='Fazer algo' />
+                    <BotaoAcao label='Fazer algo' />
+                </div>
+                <div className='mt-3'>
+                    {cartoes}
+                </div>
+            </div>
+            <ToastContainer position='bottom-right' />
+        </article>
+    )
+}
+
+export default LivroLista;

@@ -10,8 +10,12 @@ const listarAutores = async (id_livro) => {
 
     const data = await response.json();
 
-    console.log(data);
+    if(response.status == 200){
+        return data.autores;
+    }
+
     return [];
+    
 };
 
 export { listarAutores };
