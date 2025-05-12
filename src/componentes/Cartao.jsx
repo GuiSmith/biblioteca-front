@@ -1,9 +1,9 @@
 import SmartImage from "@componentes/SmartImage";
 
 
-const Cartao = ({ img = {}, titulo, botoes = [], children }) => {
+const Cartao = ({ img = {}, titulo, botoes = [], className = '', children }) => {
     return (
-        <div className='card d-flex flex-row' style={{minHeight: '150px' }}>
+        <div className={`card d-flex flex-row ${className}`} style={{minHeight: '150px' }}>
             <SmartImage
                 src={img.src}
                 alt=""
@@ -19,7 +19,7 @@ const Cartao = ({ img = {}, titulo, botoes = [], children }) => {
                 <div className='card-text'>
                     {children}
                 </div>
-                <div className="d-flex gap-2 justify-content-between">
+                <div className="d-flex flex-wrap gap-2 justify-content-between">
                     {botoes.map((botao, index) => (
                         <span key={index}>{botao}</span>
                     ))}

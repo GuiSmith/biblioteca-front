@@ -40,7 +40,7 @@ const LivroLista = () => {
 
                             return (
                                 <div key={livro.id} className='col-lg-4'>
-                                    <Cartao img={{ src: livro.foto, alt: `Imagem: ${livro.titulo}` }} titulo={livro.titulo} botoes={botoes} >
+                                    <Cartao img={{ src: livro.foto, alt: `Imagem: ${livro.titulo}` }} titulo={livro.titulo} botoes={botoes} className = 'mb-3'>
                                         <p>{`Autores: ${nomeAutores}`}</p>
                                         {/* <p>{`Sinopse: ${livro.sinopse}`}</p> */}
                                     </Cartao>
@@ -58,7 +58,7 @@ const LivroLista = () => {
     return (
         <article>
             <div className='container'>
-                <div className='d-flex gap-3 justify-content-center'>
+                <div className='d-flex flex-wrap gap-3 justify-content-center'>
                     <BotaoAcao label='Fazer algo' />
                     <BotaoAcao label='Fazer algo' />
                     <BotaoAcao label='Fazer algo' />
