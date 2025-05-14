@@ -33,4 +33,35 @@ const apiOptions = (apiMethod, apiBody = {}) => {
     return obj;
 }
 
-export default { apiUrl, token, definirToken, apiOptions };
+const auth = async () => {
+    const endpoint = 'tabelas';
+
+    const response = await fetch(`${apiUrl}/${endpoint}`, apiOptions('GET'));
+    const responseCode = response.status.toString();
+
+    if(responseCode.charAt(0) == 4){
+        return {
+            ok: false,
+            error: false,
+            mensagem: 'Usuário não autenticado',
+        };
+    }
+
+    if(responseCode == 200){
+        return {
+            ok: true,
+            error: false,
+            mensagem: 'Usuário autenticado'
+        }
+    }
+
+    if(responseCode.charAt(0) == 5 ){
+        return {
+            ok: false,
+            error: true,
+            mensagem: response.mensagem
+        }
+    }
+};
+
+export default { apiUrl, token, definirToken, apiOptions, auth };
