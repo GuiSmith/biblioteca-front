@@ -10,7 +10,7 @@ const BotaoLink = ({ to = null, label, className = 'btn-dark', style = {} }) => 
 
     const warnString = `[BotaoLink] 'to' não passado para botão`;
 
-    if(isDisabled) console.warn(warnString);
+    if(isDisabled) console.debug(warnString);
 
     return (
         <Link
@@ -20,7 +20,7 @@ const BotaoLink = ({ to = null, label, className = 'btn-dark', style = {} }) => 
             onClick = {e => {
                 if (isDisabled) {
                     e.preventDefault();
-                    console.warn(`[BotaoLink] 'to' não passado para botão`);
+                    console.debug(`[BotaoLink] 'to' não passado para botão`);
                 }
             }}
         >

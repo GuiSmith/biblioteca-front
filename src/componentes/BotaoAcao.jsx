@@ -10,9 +10,9 @@ const Botao = ({ onClick = '', className = 'btn-secondary', label, disabled = fa
 
     const warnString = `[BotaoAcao] callback 'onClick' não informado`;
 
-    const handleClick = isCallbackValid ? onClick : () => console.warn(warnString);
+    const handleClick = isCallbackValid ? onClick : () => console.debug(warnString);
 
-    if(!isCallbackValid) console.warn(warnString);
+    if(!isCallbackValid) console.debug(warnString);
 
     return (
         <button
