@@ -22,11 +22,7 @@ const LivroLista = () => {
             .then(async response => {
                 const data = await response.json();
 
-                if (data.hasOwnProperty('mensagem')) {
-                    toast(data.mensagem);
-                }
-
-                if (response.status == 204) return;
+                if (response.status !== 200) return;
 
                 setCartoes(
                     <div className='row'>
