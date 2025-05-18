@@ -22,7 +22,10 @@ const LivroLista = () => {
             .then(async response => {
                 const data = await response.json();
 
-                if (response.status !== 200) return;
+                if (response.status !== 200) {
+                    toast.error(data.mensagem);
+                    return;
+                }
 
                 setCartoes(
                     <div className='row'>
@@ -47,6 +50,7 @@ const LivroLista = () => {
                 )
             })
             .catch(error => {
+                toast.error('Erro ao buscar dados');
                 console.error('Error fetching data:', error);
             });
     }, []);
