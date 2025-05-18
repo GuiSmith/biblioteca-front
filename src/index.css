@@ -16,3 +16,11 @@ body {
   height: 150px;
   border-radius: 50% !important;
 }
+
+.form .form-control#id {
+  width: 15%;
+}
+
+.form .form-control#id[disabled] {
+  background-color: #aaa;
+}
