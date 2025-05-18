@@ -9,7 +9,7 @@ import './index.css';
 
 // Rotas | UI
 import BarraDeNavegacao from '@ui/BarraDeNavegacao';
-import PaginaInexistente from '@paginas/PaginaInexistente';
+import PaginaInexistente from '@ui/PaginaInexistente';
 import rotas from './rotas.jsx';
 
 // Utilitários
