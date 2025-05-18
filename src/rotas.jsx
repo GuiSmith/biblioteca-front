@@ -3,9 +3,9 @@ import { Login } from '@paginas/usuario';
 
 const rotas = [
 	{ auth: false, path: '/livros', element: <LivroLista /> },
-	{ auth: false, path: '/livros/:id', element: <LivroView/> },
-	{ auth: true, path: '/livros/registro/:id', element: <LivroRegistro /> },
-	{ auth: true, path: '/livros/registro/novo', element: <LivroRegistro /> },
+	{ auth: false, path: '/livro/:id', element: <LivroView/> },
+	{ auth: true, path: '/livro/:id', element: <LivroRegistro /> },
+	{ auth: true, path: '/livro/novo', element: <LivroRegistro /> },
 	{ auth: false, path: '/login', element: <Login />}
 ];
 

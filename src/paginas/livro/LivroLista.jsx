@@ -33,7 +33,7 @@ const LivroLista = () => {
                             const autores = await listarAutores(livro.id);
                             const nomeAutores = autores.reduce((acc, autor, index) => acc + (index > 0 ? ', ' : '') + autor.nome, '');
                             const botoes = [
-                                <BotaoLink to={`/livros/${livro.id}`} label = 'Detalhes' className = 'btn-primary' />,
+                                <BotaoLink to={`/livro/${livro.id}`} label = 'Detalhes' className = 'btn-primary' />,
                                 <BotaoLink label = 'Emprestar' className = 'btn-success' />
                             ];
 
@@ -59,7 +59,7 @@ const LivroLista = () => {
         <article>
             <div className='container'>
                 <div className='d-flex flex-wrap gap-3 justify-content-center'>
-                    <BotaoAcao label='Fazer algo' />
+                    <BotaoLink to='/livro/novo' label='Novo' className='btn-success' />
                     <BotaoAcao label='Fazer algo' />
                     <BotaoAcao label='Fazer algo' />
                     <BotaoAcao label='Fazer algo' />
