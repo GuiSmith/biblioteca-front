@@ -24,3 +24,12 @@ body {
 .form .form-control#id[disabled] {
   background-color: #aaa;
 }
+
+.form .bi-info-circle {
+  cursor: help
+}
+
+.form .form-check-input, .form .form-check-label {
+  cursor: pointer;
+  user-select: none;
+}

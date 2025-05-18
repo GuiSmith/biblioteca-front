@@ -1,14 +1,15 @@
 // Bibliotecas
 import { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 //Serviços
 import API from '@servicos/API';
 import { listarAutores } from '@servicos/livroAutor';
+import { deletarLivro } from '@servicos/livro';
 
 // Componentes
-import BotaoAcao from '@componentes/BotaoAcao';
+import BotaoLink from '@componentes/BotaoLink';
 
 // Utilitários
 import { isDate, formatDate } from '@utils/formatadores';
@@ -21,16 +22,14 @@ const LivroView = () => {
 		toast('ID inválido ou não informado!');
 	}
 
+	const navigate = useNavigate();
+
 	const endpoint = `livro/${id}/exemplares`;
-
 	const completeUrl = `${API.apiUrl}/${endpoint}`;
-
 	const apiOptions = API.apiOptions('GET');
 
 	const [livro, setLivro] = useState(null);
-
 	const [exemplares, setExemplares] = useState([]);
-
 	const [autores, setAutores] = useState([]);
 
 	useEffect(() => {
@@ -102,6 +101,22 @@ const LivroView = () => {
 
 	};
 
+	const handleDelete = async () => {
+		if(!id) return;
+
+		const responseDelete = await deletarLivro(id);
+
+		if(responseDelete.ok == true){
+			navigate('/livros');
+		}else{
+			if(responseDelete.error){
+				toast.error(responseDelete.mensagem);
+			}else{
+				toast.warning(responseDelete.mensagem);
+			}
+		}
+	};
+
 	return (
 		<article className='container'>
 			<div className='alert alert-primary text-dark p-3'>
@@ -120,14 +135,18 @@ const LivroView = () => {
 							}
 						</p>
 						<hr />
-						<BotaoAcao label='Fazer algo' className='btn-primary' onClick={() => console.table(livro)} />
+						<div className='d-flex justify-content-start gap-2'>
+							<BotaoLink label='Novo' to='/livro/form/novo' className='btn-primary' />
+							<BotaoLink label='Editar' to={`/livro/form/${livro.id}`} className='btn-dark' />
+							<button type='button' className='btn btn-danger' disabled={API.authType !== 'funcionario' ? true : false} onClick={handleDelete}>Deletar</button>
+						</div>
 					</>
 				)}
 			</div>
 			<div>
 				<h2 className='text-center'>Exemplares</h2>
 				{exemplares.length == 0
-					? <p className='text-muted'>Nenhum exemplar cadastrado</p> 
+					? <p className='text-muted'>Nenhum exemplar cadastrado</p>
 					: renderTable()
 				}
 			</div>
