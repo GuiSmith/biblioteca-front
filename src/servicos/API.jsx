@@ -3,9 +3,14 @@ import Cookies from 'js-cookie';
 const apiUrl = `http://localhost:5000`;
 
 const token = Cookies.get('token') || '';
+const authType = Cookies.get('authType') || undefined;
 
 const definirToken = (tokenString) => {
     Cookies.set('token', tokenString);
+}
+
+const definirAuthType = (authTypeString) => {
+    Cookies.set('authType', authTypeString)
 }
 
 const apiOptions = (apiMethod, apiBody = {}) => {
@@ -15,7 +20,7 @@ const apiOptions = (apiMethod, apiBody = {}) => {
             'Content-Type': 'application/json',
         }
     }
-    
+
     if(token.length > 0){
         obj.headers['Authorization'] = `Bearer ${token}`;
     }   
@@ -64,4 +69,4 @@ const auth = async () => {
     }
 };
 
-export default { apiUrl, token, definirToken, apiOptions, auth };
+export default { apiUrl, token, definirToken, apiOptions, auth, definirAuthType, authType };

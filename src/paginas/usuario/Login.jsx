@@ -31,6 +31,7 @@ const Login = () => {
 
             if(response.status == 200){
                 API.definirToken(responseData.token);
+                API.definirAuthType(authType);
                 toast.success('Login realizado com sucesso');
                 navigate('/livros');
             }
