@@ -21,26 +21,27 @@ function App() {
   const navigate = useNavigate();
   const filePath = '/' + location.pathname.split('/')[1];
 
-  useEffect(() => {
-    // Temporário, até criar tela e funções de login
-    API.definirToken('1b1d0428eec47d23b851d589f25db5f9d8b4b99e8e631fc8780dbfa4357a824a339a73b32e7c7571bfe0519bf0bbdde20722abb1b44ad635cfad5624a52b6279');
+  // useEffect(() => {
+  //   // Temporário, até criar tela e funções de login
 
-    API.auth()
-      .then(response => {
-        try {
-          const rotaAtual = rotas.find(rota => rota.path == filePath);
-          if(rotaAtual){
-            if(response.ok == false && rotaAtual.auth == true){
-              navigate(filePath == '/login' ? '/' : '/login');
-            }
-          }else{
-            navigate('/pagina_inexistente');
-          }
-        } catch(error) {
-          toast("Erro de autenticação, contate o suporte");
-        }
-      });
-  },[]);
+  //   API.auth()
+  //     .then(response => {
+  //       try {
+  //         const rotaAtual = rotas.find(rota => rota.path == filePath);
+  //         console.log(rotaAtual);
+  //         console.log(filePath);
+  //         if(rotaAtual){
+  //           if(response.ok == false && rotaAtual.auth == true){
+  //             // navigate(filePath == '/login' ? '/' : '/login');
+  //           }
+  //         }else{
+  //           // navigate('/pagina_inexistente');
+  //         }
+  //       } catch(error) {
+  //         toast("Erro de autenticação, contate o suporte");
+  //       }
+  //     });
+  // },[location.pathname]);
 
   return (
     <section className = 'app-container'>
