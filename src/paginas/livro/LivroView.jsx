@@ -32,6 +32,7 @@ const LivroView = () => {
 	const [exemplares, setExemplares] = useState([]);
 	const [autores, setAutores] = useState([]);
 
+	// Buscar exemplares
 	useEffect(() => {
 		fetch(completeUrl, apiOptions)
 			.then(async response => {
@@ -50,6 +51,7 @@ const LivroView = () => {
 			})
 	}, []);
 
+	// Buscar autores
 	useEffect(() => {
 		if (livro) {
 			listarAutores(livro.id)
@@ -125,7 +127,7 @@ const LivroView = () => {
 				) : (
 					<>
 						<h2>{livro.titulo || 'Titulo'}</h2>
-						<p>Sinopse: {livro.sinopse || 'sinopse'}</p>
+						<p>Sinopse: {livro.sinopse}</p>
 						<p>Enredo: {livro.enredo}</p>
 						<p>
 							Autores: {
