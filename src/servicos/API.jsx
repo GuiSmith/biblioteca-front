@@ -21,17 +21,17 @@ const apiOptions = (apiMethod, apiBody = {}) => {
         }
     }
 
-    if(token.length > 0){
+    if (token.length > 0) {
         obj.headers['Authorization'] = `Bearer ${token}`;
-    }   
+    }
 
-    if(!['GET','DELETE'].includes(apiMethod)){
+    if (!['GET', 'DELETE'].includes(apiMethod)) {
         const strippedApiBody = Object.fromEntries(
-            Object.entries(apiBody).filter(([key,value]) => value ?? false)
+            Object.entries(apiBody).filter(([key, value]) => value ?? false)
         );
-        if(Object.keys(strippedApiBody).length == 0){
+        if (Object.keys(strippedApiBody).length == 0) {
             return null;
-        }else{
+        } else {
             obj.body = JSON.stringify(strippedApiBody);
         }
     }
@@ -44,7 +44,7 @@ const auth = async () => {
     const response = await fetch(`${apiUrl}/${endpoint}`, apiOptions('GET'));
     const responseCode = response.status.toString();
 
-    if(responseCode.charAt(0) == 4){
+    if (responseCode.charAt(0) == 4) {
         return {
             ok: false,
             error: false,
@@ -52,7 +52,7 @@ const auth = async () => {
         };
     }
 
-    if(responseCode == 200){
+    if (responseCode == 200) {
         return {
             ok: true,
             error: false,
@@ -60,7 +60,7 @@ const auth = async () => {
         }
     }
 
-    if(responseCode.charAt(0) == 5 ){
+    if (responseCode.charAt(0) == 5) {
         return {
             ok: false,
             error: true,
@@ -69,4 +69,57 @@ const auth = async () => {
     }
 };
 
-export default { apiUrl, token, definirToken, apiOptions, auth, definirAuthType, authType };
+const search = async (tabela, filtrosObj) => {
+    const estrutura = {
+        coluna: {
+            op: 'like',
+            valor: 'mundo'
+        }
+    };
+
+    try {
+        const filtrosArray = Object.entries(filtrosObj).map(([coluna, params]) => `${coluna}=${params.op}:${params.valor}`);
+        const filtrosUrl = filtrosArray.join('&');
+
+        const completeUrl = `${apiUrl}/${tabela}?${filtrosUrl}`;
+        const encodedUrl = encodeURI(completeUrl);
+
+        const response = await fetch(encodedUrl, apiOptions('GET'));
+        const data = response.status !== 204 ? await response.json() : {};
+
+        if(response.status == 200){
+            return {
+                ok: true,
+                error: false,
+                array: data,
+                mensagem: ``,
+            };
+        }
+
+        if(response.status == 204){
+            return {
+                ok: false,
+                error: false,
+                array: [],
+                mensagem: ``,
+            };
+        }
+
+        return {
+            ok: false,
+            error: true,
+            array: [],
+            mensagem: data.mensagem
+        }
+    } catch (error) {
+        console.log(error);
+        return {
+            ok: false,
+            error: true,
+            array: [],
+            mensagem: error.message
+        };
+    }
+}
+
+export default { apiUrl, token, definirToken, apiOptions, auth, definirAuthType, authType, search };
