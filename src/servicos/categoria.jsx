@@ -6,13 +6,9 @@ const listarCategorias = async () => {
 
     const completeUrl = `${API.apiUrl}/${endpoint}`;
     const response = await fetch(completeUrl,API.apiOptions('GET'));
-    const data = await response.json();
+    const data = response.status == 200 ? await response.json() : [];
 
-    if(response.status == 200){
-        return data;
-    }
-
-    return [];
+    return data;
     
 };
 
