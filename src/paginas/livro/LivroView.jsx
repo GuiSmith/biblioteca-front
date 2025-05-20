@@ -139,7 +139,11 @@ const LivroView = () => {
 						<hr />
 						<div className='d-flex justify-content-start gap-2'>
 							<BotaoLink label='Novo' to='/livro/form/novo' className='btn-primary' />
+							
 							<BotaoLink label='Editar' to={`/livro/form/${livro.id}`} className='btn-dark' />
+
+							<BotaoLink label='Listar' to='/livros' className='btn-secondary' />
+							
 							<button type='button' className='btn btn-danger' disabled={API.authType !== 'funcionario' ? true : false} onClick={handleDelete}>Deletar</button>
 						</div>
 					</>
