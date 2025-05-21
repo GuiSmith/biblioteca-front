@@ -69,6 +69,32 @@ const auth = async () => {
     }
 };
 
+/**
+ * Realiza uma busca na API com base nos filtros fornecidos.
+ * 
+ * @function
+ * @async
+ * @param {string} tabela - Nome da tabela (endpoint) a ser consultada.
+ * @param {Object.<string, {op: string, valor: string|number|boolean}>} filtrosObj - Objeto contendo os filtros no formato:
+ *   {
+ *     coluna: {
+ *       op: 'operador',
+ *       valor: 'valor'
+ *     },
+ *     ...
+ *   }
+ * Exemplo:
+ *   {
+ *     nome: { op: 'like', valor: 'mundo' },
+ *     ativo: { op: '=', valor: true }
+ *   }
+ *
+ * @returns {Promise<Object>} Um objeto com os seguintes campos:
+ * @property {boolean} ok - Indica se a busca retornou dados com sucesso (status 200).
+ * @property {boolean} error - Indica se houve erro na requisição.
+ * @property {Array} array - Os dados retornados da API.
+ * @property {string} mensagem - Mensagem de erro ou status, se aplicável.
+ */
 const search = async (tabela, filtrosObj) => {
     const estrutura = {
         coluna: {
@@ -87,7 +113,7 @@ const search = async (tabela, filtrosObj) => {
         const response = await fetch(encodedUrl, apiOptions('GET'));
         const data = response.status !== 204 ? await response.json() : {};
 
-        if(response.status == 200){
+        if (response.status == 200) {
             return {
                 ok: true,
                 error: false,
@@ -96,7 +122,7 @@ const search = async (tabela, filtrosObj) => {
             };
         }
 
-        if(response.status == 204){
+        if (response.status == 204) {
             return {
                 ok: false,
                 error: false,
@@ -120,6 +146,6 @@ const search = async (tabela, filtrosObj) => {
             mensagem: error.message
         };
     }
-}
+};
 
 export default { apiUrl, token, definirToken, apiOptions, auth, definirAuthType, authType, search };

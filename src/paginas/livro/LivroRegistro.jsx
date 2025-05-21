@@ -9,7 +9,7 @@ import debounce from 'lodash.debounce';
 import API from '@servicos/API';
 import { listarCategorias } from '@servicos/categoria';
 import { selecionarLivro, deletarLivro } from '@servicos/livro';
-import { listarAutores } from '@servicos/livroAutor';
+import { listarAutores, inserirLivroAutor, excluirlivroAutor } from '@servicos/livroAutor';
 
 // Componentes
 import BotaoLink from '@componentes/BotaoLink';
@@ -31,7 +31,6 @@ const LivroRegistro = () => {
 	const params = useParams();
 
 	const { register, handleSubmit, reset, watch } = useForm({ ...defaultValues });
-	const [id, setId] = useState(undefined);
 	const [categorias, setCategorias] = useState([]);
 	const [autores, setAutores] = useState([]);
 	const [novosAutores, setNovosAutores] = useState([]);
@@ -39,8 +38,8 @@ const LivroRegistro = () => {
 	const [mostrarDropdown, setMostrarDropdown] = useState(false);
 
 	useEffect(() => {
-		setId(params.id);
-	},[location.pathname]);
+		reset({ id: params.id });
+	}, [location.pathname]);
 
 	// Listando categorias
 	useEffect(() => {
@@ -55,14 +54,14 @@ const LivroRegistro = () => {
 
 	// Selecionando livro e autores
 	useEffect(() => {
-		if (!id) {
-			reset({...defaultValues});
+		if (!watch('id')) {
+			reset({ ...defaultValues });
 			setNovosAutores([]);
 			setAutores([]);
 			return;
 		}
 
-		selecionarLivro(id)
+		selecionarLivro(watch('id'))
 			.then(async livro => {
 				if (Object.keys(livro).length > 0) {
 					reset(livro)
@@ -78,12 +77,14 @@ const LivroRegistro = () => {
 				console.log(error);
 				toast.error('Erro ao selecionar livro');
 			});
-	}, [id]);
+	}, [watch('id')]);
 
 	const onDelete = async () => {
-		if (!id) return;
+		if (!watch('id')) return;
 
-		const responseDelete = await deletarLivro(id);
+		const livroId = watch('id');
+
+		const responseDelete = await deletarLivro(livroId);
 
 		if (responseDelete.ok == true) {
 			navigate('/livros');
@@ -150,11 +151,12 @@ const LivroRegistro = () => {
 	};
 
 	const onSubmit = async (data) => {
+		// Livro
 		try {
 			// Testando se o registro deve ser criado ou atualizado
 			if (data.id > 0) {
 				// Atualizar registro
-				const completeUrl = `${API.apiUrl}/${endpoint}/${id}`;
+				const completeUrl = `${API.apiUrl}/${endpoint}/${data.id}`;
 				const method = 'PUT';
 
 				const responsePut = await fetch(completeUrl, API.apiOptions(method, data));
@@ -181,18 +183,55 @@ const LivroRegistro = () => {
 				}
 			}
 
-			// Cadastrando autores
-			if(!id) return;
-
-			const autoresRemovidos = autores.filter(autor => !novosAutores.some(novoAutor => novoAutor.id === autor.id));
-			const autoresAdicionados = novosAutores.filter(novoAutor => !autores.some(autor => autor.id === novoAutor.id));
-			
-			console.log(`Autores removidos: ${autoresRemovidos.map(autor => autor.nome).join(',')}`);
-			console.log(`Autores adicionados: ${autoresAdicionados.map(autor => autor.nome).join(',')}`);
-
 		} catch (error) {
 			console.debug(error);
 			toast.error('Erro ao registrar livro');
+		}
+
+		// Autores
+		try {
+			// Cadastrando autores
+			if (!watch('id')) return;
+
+			const autoresRemovidos = autores.filter(autor => !novosAutores.some(novoAutor => novoAutor.id === autor.id));
+			const autoresAdicionados = novosAutores.filter(novoAutor => !autores.some(autor => autor.id === novoAutor.id));
+
+			// Adicionando autores
+			autoresAdicionados.forEach(async autorAdicionado => {
+				const autorAdicionadoResponse = await inserirLivroAutor({ id_livro: watch('id'), id_autor: autorAdicionado.id });
+
+				if (autorAdicionadoResponse.ok === true) return;
+
+				if (autorAdicionadoResponse.error === true) {
+					toast.error(`Erro ao inserir ${autorAdicionado.nome}`);
+					return;
+				}
+
+				if(autorAdicionadoResponse.ok === false && autorAdicionadoResponse.error === false){
+					toast.warning(autorAdicionadoResponse.mensagem);
+					return;
+				}
+			});
+
+			// Removendo autores
+			autoresRemovidos.forEach(async autorRemovido => {
+				const autorRemovidoResponse = await excluirlivroAutor({id_livro: watch('id'), id_autor: autorRemovido.id});
+
+				if(autorRemovidoResponse.ok === true) return;
+
+				if(autorRemovidoResponse.error === true){
+					toast.error(`Erro ao remover ${autorRemovido.nome}`);
+					return;
+				}
+
+				if(autorRemovidoResponse.ok === false && autorRemovidoResponse.error === false){
+					toast.warning(autorRemovido.mensagem);
+					return;
+				}
+			});
+		} catch (error) {
+			console.error('Erro ao editar autores',error);
+			toast.error('Erro ao gerenciar autores');
 		}
 	};
 
@@ -284,7 +323,7 @@ const LivroRegistro = () => {
 				<div className='mb-3 position-relative'>
 					<label htmlFor="autores" className='form-label'>Buscar autor</label>
 					<input type="text" className='form-control' id='autores' placeholder='Pesquise autores aqui...' onChange={onAutorChange} onFocus={() => setMostrarDropdown(true)} />
-					{autoresPesquisados.length > 0 && (
+					{mostrarDropdown && autoresPesquisados.length > 0 && (
 						<ul className='list-group position-absolute w-100 z-3' style={{ maxHeight: '200px', overFlowY: 'auto' }}>
 							{autoresPesquisados.map(autor => (
 								<li key={autor.id} className='list-group-item list-group-item-action' onClick={() => adicionarAutor(autor)} style={{ cursor: 'pointer' }}>
