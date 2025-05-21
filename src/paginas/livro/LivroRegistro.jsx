@@ -2,7 +2,7 @@
 import { useForm } from 'react-hook-form';
 import { ToastContainer, toast } from 'react-toastify';
 import { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import debounce from 'lodash.debounce';
 
 // Serviços
@@ -27,14 +27,20 @@ const LivroRegistro = () => {
 
 	const endpoint = `livro`;
 	const navigate = useNavigate();
+	const location = useLocation();
+	const params = useParams();
 
 	const { register, handleSubmit, reset, watch } = useForm({ ...defaultValues });
-	const { id } = useParams();
-
+	const [id, setId] = useState(undefined);
 	const [categorias, setCategorias] = useState([]);
 	const [autores, setAutores] = useState([]);
 	const [novosAutores, setNovosAutores] = useState([]);
 	const [autoresPesquisados, setAutoresPesquisados] = useState([]);
+	const [mostrarDropdown, setMostrarDropdown] = useState(false);
+
+	useEffect(() => {
+		setId(params.id);
+	},[location.pathname]);
 
 	// Listando categorias
 	useEffect(() => {
@@ -50,7 +56,9 @@ const LivroRegistro = () => {
 	// Selecionando livro e autores
 	useEffect(() => {
 		if (!id) {
-			reset({ ...defaultValues })
+			reset({...defaultValues});
+			setNovosAutores([]);
+			setAutores([]);
 			return;
 		}
 
@@ -59,7 +67,8 @@ const LivroRegistro = () => {
 				if (Object.keys(livro).length > 0) {
 					reset(livro)
 				} else {
-					toast.warning('Livro não encontrado!')
+					toast.warning('Livro não encontrado!');
+					// return;
 				}
 				const autoresCadastrados = await listarAutores(livro.id);
 				setAutores(autoresCadastrados);
@@ -70,6 +79,75 @@ const LivroRegistro = () => {
 				toast.error('Erro ao selecionar livro');
 			});
 	}, [id]);
+
+	const onDelete = async () => {
+		if (!id) return;
+
+		const responseDelete = await deletarLivro(id);
+
+		if (responseDelete.ok == true) {
+			navigate('/livros');
+		} else {
+			if (responseDelete.error) {
+				toast.error(responseDelete.mensagem);
+			} else {
+				toast.warning(responseDelete.mensagem);
+			}
+		}
+	};
+
+	// Retirar autor da lista
+	const removerAutor = (novoAutor) => {
+		setNovosAutores(novosAutores.filter(autor => autor.id !== novoAutor.id));
+	};
+
+	// Adicionar autor na lista
+	const adicionarAutor = (novoAutor) => {
+
+		const jaExiste = novosAutores.some(autor => autor.id == novoAutor.id);
+
+		if (!jaExiste) {
+			setNovosAutores(prev => [...prev, novoAutor]);
+		}
+
+		setMostrarDropdown(false);
+		setAutoresPesquisados([]);
+	}
+
+	// Pesquisa autor na API, literalmente
+	const debouncedBuscarAutores = useRef(
+		debounce(async (termo) => {
+			if (!termo || termo.length < 2) return;
+
+			const tabela = 'autor';
+			const filtros = { nome: { op: 'like', valor: termo } };
+
+			try {
+				const dados = await API.search(tabela, filtros);
+
+				if (dados.error === true) {
+					toast.error('Erro ao buscar autores');
+				}
+
+				if (dados.ok === false && dados.error === false) {
+					toast.warning('Nenhum autor encontrado');
+				}
+
+				if (dados.ok === true) {
+					setAutoresPesquisados(dados.array);
+				}
+			} catch (error) {
+				console.error('Erro ao buscar autores', error);
+				toast.error('Erro ao buscar autores');
+			}
+		}, 500)
+	).current;
+
+	// Ao digitar no campo de busca de autor
+	const onAutorChange = (e) => {
+		const termo = e.target.value;
+		debouncedBuscarAutores(termo);
+	};
 
 	const onSubmit = async (data) => {
 		try {
@@ -97,69 +175,26 @@ const LivroRegistro = () => {
 
 				if (responsePost.status == 201) {
 					toast.success('Livro cadastrado!');
+					navigate(`/livro/form/${dataPost.id}`);
 				} else {
 					toast.warning(dataPost.mensagem);
 				}
 			}
+
+			// Cadastrando autores
+			if(!id) return;
+
+			const autoresRemovidos = autores.filter(autor => !novosAutores.some(novoAutor => novoAutor.id === autor.id));
+			const autoresAdicionados = novosAutores.filter(novoAutor => !autores.some(autor => autor.id === novoAutor.id));
+			
+			console.log(`Autores removidos: ${autoresRemovidos.map(autor => autor.nome).join(',')}`);
+			console.log(`Autores adicionados: ${autoresAdicionados.map(autor => autor.nome).join(',')}`);
+
 		} catch (error) {
 			console.debug(error);
 			toast.error('Erro ao registrar livro');
 		}
 	};
-
-	const onDelete = async () => {
-		if (!id) return;
-
-		const responseDelete = await deletarLivro(id);
-
-		if (responseDelete.ok == true) {
-			navigate('/livros');
-		} else {
-			if (responseDelete.error) {
-				toast.error(responseDelete.mensagem);
-			} else {
-				toast.warning(responseDelete.mensagem);
-			}
-		}
-	};
-
-	// Retirar autor da lista
-	const handleAutorClick = (e) => {
-		
-		// Testar se autor está dentro de novosAutores, se sim, retirar de lá
-		const inAutores = novosAutores.some(autor => autor.id == e.target.id);
-		if (inAutores) {
-			setNovosAutores(novosAutores.filter(autor => autor.id != e.target.id));
-			return;
-		}
-	};
-
-	const debouncedBuscarAutores = useRef(
-		debounce(async (termo) => {
-			if(!termo || termo.length < 2) return;
-
-			const tabela = 'autor';
-			const filtros = { nome: {op: 'like', valor: termo} };
-
-			try {
-				const dados = await API.search(tabela, filtros);
-				setAutoresPesquisados(dados);
-			} catch (error) {
-				console.error('Erro ao buscar autores',error);
-				toast.error('Erro ao buscar autores');
-			}
-		},500)
-	).current;
-
-	const onAutorChange = (e) => {
-		console.log(e.target.value);
-		const termo = e.target.value;
-		debouncedBuscarAutores(termo);
-	};
-
-	useEffect(() => {
-		console.log(autoresPesquisados);
-	},[autoresPesquisados]);
 
 	return (
 		<article>
@@ -167,10 +202,21 @@ const LivroRegistro = () => {
 			<form method='POST' onSubmit={handleSubmit(onSubmit)} className='form container alert alert-secondary position-relative'>
 				{/* Botões */}
 				<div className='mb-3 d-flex justify-content-start gap-2'>
+					{/* Novo */}
+					{/* <button type='button' className='btn btn-primary' onClick={handleClickNovo} >Novo</button> */}
 					<BotaoLink label='Novo' to='/livro/form/novo' className='btn-primary' />
+					{/* Salvar */}
 					<button type='submit' className='btn btn-success'>Salvar</button>
-					<BotaoLink label='Detalhes' to={`/livro/view/${watch('id')}`} className={`btn-dark ${watch('id') ? '' : 'disabled'}`} />
-					<button type='button' className={`btn btn-danger ${watch('id') ? '' : 'disabled'}`} onClick={(onDelete)}>Deletar</button>
+					{/* Listar */}
+					<BotaoLink label='Listar' to='/livros' className='btn-secondary' />
+					{/* Detalhes */}
+					{watch('id') ? (
+						<BotaoLink label='Detalhes' to={`/livro/view/${watch('id')}`} className='btn-dark' />
+					) : ''}
+					{/* Deletar */}
+					{watch('id') ? (
+						<button type='button' className='btn btn-danger' onClick={(onDelete)}>Deletar</button>
+					) : ''}
 				</div>
 				{/* ID */}
 				<div className='mb-3'>
@@ -222,19 +268,31 @@ const LivroRegistro = () => {
 					</label>
 					<textarea id="enredo" className='form-control' {...register('enredo')}></textarea>
 				</div>
-				{/* Autores */}
-				<div className='mb-3'>
-					<label htmlFor="autores" className='form-label'>Autores</label>
-					<input type="text" className='form-control' id='autores' placeholder='Pesquise autores aqui...' onChange={onAutorChange} />
-				</div>
 				{/* Lista de autores */}
-				<div className='mb-3 d-flex justify-content-start gap-2'>
-					{novosAutores.map(autor => (
-						<button key={autor.id} id={autor.id} type='button' className='btn btn-secondary' onClick={handleAutorClick} >
-							{`${autor.id} | ${autor.nome}`}
-							<span className='bi bi-x ms-2'></span>
-						</button>
-					))}
+				<div className='mb-3'>
+					<label className='form-label'>Autores</label>
+					<div className='d-flex flex-wrap justify-content-start gap-2'>
+						{novosAutores.map(autor => (
+							<button key={autor.id} id={autor.id} type='button' className='btn btn-dark' onClick={() => removerAutor(autor)} >
+								{`${autor.id} | ${autor.nome}`}
+								<span className='bi bi-x ms-2 text-info'></span>
+							</button>
+						))}
+					</div>
+				</div>
+				{/* Buscar autor */}
+				<div className='mb-3 position-relative'>
+					<label htmlFor="autores" className='form-label'>Buscar autor</label>
+					<input type="text" className='form-control' id='autores' placeholder='Pesquise autores aqui...' onChange={onAutorChange} onFocus={() => setMostrarDropdown(true)} />
+					{autoresPesquisados.length > 0 && (
+						<ul className='list-group position-absolute w-100 z-3' style={{ maxHeight: '200px', overFlowY: 'auto' }}>
+							{autoresPesquisados.map(autor => (
+								<li key={autor.id} className='list-group-item list-group-item-action' onClick={() => adicionarAutor(autor)} style={{ cursor: 'pointer' }}>
+									{autor.nome}
+								</li>
+							))}
+						</ul>
+					)}
 				</div>
 			</form>
 			< ToastContainer position="bottom-right" />
