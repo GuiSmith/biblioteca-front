@@ -1,6 +1,8 @@
 import Cookies from 'js-cookie';
 
-const apiUrl = `http://localhost:5000`;
+const ip = window.location.hostname;
+
+const apiUrl = `http://${ip}:5000`;
 
 const token = Cookies.get('token') || '';
 const authType = Cookies.get('authType') || undefined;
