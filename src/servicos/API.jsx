@@ -3,6 +3,7 @@ import Cookies from 'js-cookie';
 const ip = window.location.hostname;
 
 const apiUrl = `http://${ip}:5000`;
+// const apiUrl = `http://localhost:5000`;
 
 const token = Cookies.get('token') || '';
 const authType = Cookies.get('authType') || undefined;
@@ -106,10 +107,13 @@ const search = async (tabela, filtrosObj) => {
     };
 
     try {
+
+        const endpoint = 'search';
+
         const filtrosArray = Object.entries(filtrosObj).map(([coluna, params]) => `${coluna}=${params.op}:${params.valor}`);
         const filtrosUrl = filtrosArray.join('&');
 
-        const completeUrl = `${apiUrl}/${tabela}?${filtrosUrl}`;
+        const completeUrl = `${apiUrl}/${endpoint}/${tabela}?${filtrosUrl}`;
         const encodedUrl = encodeURI(completeUrl);
 
         const response = await fetch(encodedUrl, apiOptions('GET'));
