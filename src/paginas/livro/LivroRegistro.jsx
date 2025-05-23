@@ -7,9 +7,7 @@ import debounce from 'lodash.debounce';
 
 // Serviços
 import API from '@servicos/API';
-import { listarCategorias } from '@servicos/categoria';
-import { selecionarLivro, deletarLivro } from '@servicos/livro';
-import { listarAutores, inserirLivroAutor, excluirlivroAutor } from '@servicos/livroAutor';
+import { inserirLivroAutor, excluirlivroAutor } from '@servicos/livroAutor';
 
 // Componentes
 import BotaoLink from '@componentes/BotaoLink';
@@ -44,8 +42,20 @@ const LivroRegistro = () => {
 	// Listando categorias
 	useEffect(() => {
 		// Listando categorias
-		listarCategorias()
-			.then(categorias => setCategorias(categorias))
+		API.listar('categoria')
+			.then(responseCategoria => {
+				if (responseCategoria.error === true) {
+					toast.error('Erro ao listar categorias, contate o suporte');
+				}
+
+				if (responseCategoria.error === false && responseCategoria.ok == false) {
+					toast.warning('Nenhuma categoria cadastrada!');
+				}
+
+				if (responseCategoria.ok === true) {
+					setCategorias(responseCategoria.array);
+				}
+			})
 			.catch(error => {
 				console.debug(error);
 				toast.error('Erro ao listar categorias. Contate o suporte!');
@@ -61,17 +71,19 @@ const LivroRegistro = () => {
 			return;
 		}
 
-		selecionarLivro(watch('id'))
-			.then(async livro => {
-				if (Object.keys(livro).length > 0) {
-					reset(livro)
-				} else {
-					toast.warning('Livro não encontrado!');
-					// return;
+		API.selecionar('livro', watch('id'))
+			.then(responseLivro => {
+				if (responseLivro.error === true) {
+					toast.error('Erro ao buscar livro');
 				}
-				const autoresCadastrados = await listarAutores(livro.id);
-				setAutores(autoresCadastrados);
-				setNovosAutores(autoresCadastrados);
+
+				if (responseLivro.ok === false && responseLivro.error === false) {
+					toast.warning('Livro não encontrado!');
+				}
+
+				if (responseLivro.ok === true) {
+					reset(responseLivro.data);
+				}
 			})
 			.catch(error => {
 				console.log(error);
@@ -80,21 +92,29 @@ const LivroRegistro = () => {
 	}, [watch('id')]);
 
 	const onDelete = async () => {
-		if (!watch('id')) return;
+		try {
+			if (!watch('id')) return;
 
-		const livroId = watch('id');
+			const livroId = watch('id');
 
-		const responseDelete = await deletarLivro(livroId);
+			const responseDelete = await API.deletar('livro', livroId);
 
-		if (responseDelete.ok == true) {
-			navigate('/livros');
-		} else {
+			if (responseDelete.ok) {
+				navigate('/livros');
+			}
+
 			if (responseDelete.error) {
-				toast.error(responseDelete.mensagem);
-			} else {
+				toast.error('Erro ao deletar livro!');
+			}
+
+			if (responseDelete.error === false && responseDelete.ok === false) {
 				toast.warning(responseDelete.mensagem);
 			}
+		} catch (error) {
+			console.log(error);
+			toast.error('Erro ao deletar livro!');
 		}
+
 	};
 
 	// Retirar autor da lista
@@ -207,7 +227,7 @@ const LivroRegistro = () => {
 					return;
 				}
 
-				if(autorAdicionadoResponse.ok === false && autorAdicionadoResponse.error === false){
+				if (autorAdicionadoResponse.ok === false && autorAdicionadoResponse.error === false) {
 					toast.warning(autorAdicionadoResponse.mensagem);
 					return;
 				}
@@ -215,22 +235,22 @@ const LivroRegistro = () => {
 
 			// Removendo autores
 			autoresRemovidos.forEach(async autorRemovido => {
-				const autorRemovidoResponse = await excluirlivroAutor({id_livro: watch('id'), id_autor: autorRemovido.id});
+				const autorRemovidoResponse = await excluirlivroAutor({ id_livro: watch('id'), id_autor: autorRemovido.id });
 
-				if(autorRemovidoResponse.ok === true) return;
+				if (autorRemovidoResponse.ok === true) return;
 
-				if(autorRemovidoResponse.error === true){
+				if (autorRemovidoResponse.error === true) {
 					toast.error(`Erro ao remover ${autorRemovido.nome}`);
 					return;
 				}
 
-				if(autorRemovidoResponse.ok === false && autorRemovidoResponse.error === false){
+				if (autorRemovidoResponse.ok === false && autorRemovidoResponse.error === false) {
 					toast.warning(autorRemovido.mensagem);
 					return;
 				}
 			});
 		} catch (error) {
-			console.error('Erro ao editar autores',error);
+			console.error('Erro ao editar autores', error);
 			toast.error('Erro ao gerenciar autores');
 		}
 	};

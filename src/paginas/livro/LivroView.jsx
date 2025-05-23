@@ -6,7 +6,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 //Serviços
 import API from '@servicos/API';
 import { listarAutores } from '@servicos/livroAutor';
-import { deletarLivro } from '@servicos/livro';
 
 // Componentes
 import BotaoLink from '@componentes/BotaoLink';
@@ -106,7 +105,7 @@ const LivroView = () => {
 	const handleDelete = async () => {
 		if(!id) return;
 
-		const responseDelete = await deletarLivro(id);
+		const responseDelete = await API.deletar('livro',id);
 
 		if(responseDelete.ok == true){
 			navigate('/livros');

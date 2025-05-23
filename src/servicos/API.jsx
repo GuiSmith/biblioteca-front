@@ -30,7 +30,7 @@ const apiOptions = (apiMethod, apiBody = {}) => {
 
     if (!['GET', 'DELETE'].includes(apiMethod)) {
         const strippedApiBody = Object.fromEntries(
-            Object.entries(apiBody).filter(([key, value]) => value ?? false)
+            Object.entries(apiBody).filter(([key, value]) => value !== null)
         );
         if (Object.keys(strippedApiBody).length == 0) {
             return null;
@@ -72,32 +72,6 @@ const auth = async () => {
     }
 };
 
-/**
- * Realiza uma busca na API com base nos filtros fornecidos.
- * 
- * @function
- * @async
- * @param {string} tabela - Nome da tabela (endpoint) a ser consultada.
- * @param {Object.<string, {op: string, valor: string|number|boolean}>} filtrosObj - Objeto contendo os filtros no formato:
- *   {
- *     coluna: {
- *       op: 'operador',
- *       valor: 'valor'
- *     },
- *     ...
- *   }
- * Exemplo:
- *   {
- *     nome: { op: 'like', valor: 'mundo' },
- *     ativo: { op: '=', valor: true }
- *   }
- *
- * @returns {Promise<Object>} Um objeto com os seguintes campos:
- * @property {boolean} ok - Indica se a busca retornou dados com sucesso (status 200).
- * @property {boolean} error - Indica se houve erro na requisição.
- * @property {Array} array - Os dados retornados da API.
- * @property {string} mensagem - Mensagem de erro ou status, se aplicável.
- */
 const search = async (tabela, filtrosObj) => {
     const estrutura = {
         coluna: {
@@ -154,4 +128,132 @@ const search = async (tabela, filtrosObj) => {
     }
 };
 
-export default { apiUrl, token, definirToken, apiOptions, auth, definirAuthType, authType, search };
+const selecionar = async (tabela, id) => {
+
+    try {
+        const completeUrl = `${apiUrl}/${tabela}/${id}`;
+        const encodedUrl = encodeURI(completeUrl);
+
+        const response = await fetch(encodedUrl, apiOptions('GET'));
+        const data = response.status !== 204 ? await response.json() : {};
+
+        if (response.status == 200) {
+            return {
+                ok: true,
+                error: false,
+                data,
+                mensagem: ``,
+            };
+        }
+
+        if (response.status == 404) {
+            return {
+                ok: false,
+                error: false,
+                data: {},
+                mensagem: ``,
+            };
+        }
+
+        if(response.status === 500){
+            return {
+                ok: false,
+                error: true,
+                data: {},
+                mensagem: ''
+            };
+        }
+
+        return {
+            ok: false,
+            error: false,
+            data: {},
+            mensagem: data.mensagem
+        };
+        
+    } catch (error) {
+        console.error(error);
+        return {
+            ok: false,
+            error: true,
+            data: {},
+            mensagem: data.mensagem
+        };
+    }
+};
+
+const listar = async (tabela) => {
+    try {
+        const completeUrl = `${apiUrl}/${tabela}`;
+        const encodedUrl = encodeURI(completeUrl);
+
+        const response = await fetch(encodedUrl, apiOptions('GET'));
+        const data = response.status !== 204 ? await response.json() : {};
+
+        if (response.status == 200) {
+            return {
+                ok: true,
+                error: false,
+                array: data,
+                mensagem: ``,
+            };
+        }
+
+        if (response.status == 204) {
+            return {
+                ok: false,
+                error: false,
+                array: [],
+                mensagem: ``,
+            };
+        }
+    } catch (error) {
+        console.error(error);
+        return {
+            ok: false,
+            error: true,
+            array: [],
+            mensagem: data.mensagem
+        };
+    }
+};
+
+const deletar = async (tabela, id) => {
+    try {
+
+        const response = await fetch(`${apiUrl}/${tabela}/${id}`, apiOptions('DELETE'));
+        const data = await response.json();
+
+        if (response.status === 200) {
+            return {
+                ok: true,
+                error: false,
+                mensagem: ''
+            };
+        }
+
+        if (response.status === 500) {
+            return {
+                ok: false,
+                error: true,
+                mensagem: ''
+            };
+        }
+
+        return {
+            ok: false,
+            error: false,
+            mensagem: data.mensagem
+        };
+
+    } catch (error) {
+        console.log(error);
+        return {
+            ok: false,
+            error: true,
+            mensagem: error.message
+        };
+    }
+}
+
+export default { apiUrl, token, definirToken, apiOptions, auth, definirAuthType, authType, search, selecionar, listar, deletar };
