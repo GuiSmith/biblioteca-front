@@ -39,7 +39,8 @@ const LivroLista = () => {
                                     <Cartao img={{ src: livro.foto, alt: `Imagem: ${livro.titulo}` }} titulo={livro.titulo} botoes={botoes} className = 'mb-3'>
                                         {/* <p>{`Autores: ${nomeAutores}`}</p> */}
                                         {/* <p>{`Sinopse: ${livro.sinopse}`}</p> */}
-                                        <p>5 exemplares</p>
+                                        {/* <p>5 exemplares</p> */}
+                                        <p>{livro.ativo ? 'Ativo' : 'Inativo'}</p>
                                     </Cartao>
                                 </div>
                             )
