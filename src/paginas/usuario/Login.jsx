@@ -13,7 +13,6 @@ const Login = () => {
     const navigate = useNavigate();
 
     const onSubmit = async (data) => {
-        console.log('Dados enviados: ', data);
 
         try {
             const authTypeOptions = ['usuario', 'funcionario'];
@@ -32,8 +31,15 @@ const Login = () => {
             if(response.status == 200){
                 API.definirToken(responseData.token);
                 API.definirAuthType(authType);
-                toast.success('Login realizado com sucesso');
-                navigate('/livros');
+                
+                const authResponse = await fetch(`${API.apiUrl}/`,API.apiOptions('GET'));                
+                if(authResponse.status == 204){
+                    toast.success('Login realizado com sucesso');
+                }else{
+                    toast.error('Erro ao realizar login, contate o suporte!');
+                    console.error('Login por e-mail e senha realizado, mas autenticação falhou!');
+                }
+                return;
             }
 
             toast.warning(responseData.mensagem);
