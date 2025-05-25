@@ -42,6 +42,7 @@ const CategoriaRegistro = () => {
 
 				if(responseCategoria.ok === false && responseCategoria.error === false){
 					toast.warning('Categoria não encontrada');
+					navigate('/categoria/form/novo');
 				}
 
 				if(responseCategoria.ok === true){
@@ -59,6 +60,52 @@ const CategoriaRegistro = () => {
 	const onSubmit = async (data) => {
 		try {
 			console.log(data);
+			console.log();
+
+			if(data.id > 0){
+				const completeUrl = `${API.apiUrl}/${endpoint}/${data.id}`;
+				const method = 'PUT';
+
+				const responsePut = await fetch(completeUrl, API.apiOptions(method, data));
+				const dataPut = await responsePut.json();
+
+				if(responsePut.status == 200){
+					toast.success('Categoria atualizada!');
+					return;
+				}
+
+				if(responsePut.status == 500){
+					toast.error('Erro ao atualizar categoria, contate o suporte');
+					return;
+				}
+
+				if(![200,500].includes(responsePut.status)){
+					toast.warning(dataPut.mensagem);
+					return;
+				}
+			}else{
+				const completeUrl = `${API.apiUrl}/${endpoint}`;
+				const method = 'POST';
+
+				const responsePost = await fetch(completeUrl, API.apiOptions(method, data));
+				const dataPost = await responsePost.json();
+
+				if(responsePost.status == 201){
+					toast.success('Categoria criada!');
+					navigate(`/categoria/view/${dataPost.id}`);
+					return;
+				}
+
+				if(responsePost.status == 500){
+					toast.error('Erro ao criar categoria, contate o suporte');
+					return;
+				}
+
+				if(![201,500].includes(responsePost.status)){
+					toast.warning(dataPost.mensagem);
+					return;
+				}
+			}
 		} catch (error) {
 			console.error(error);
 			toast.error('Erro ao registrar categoria');
