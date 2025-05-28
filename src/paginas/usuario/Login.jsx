@@ -29,8 +29,8 @@ const Login = () => {
             const responseData = await response.json();
 
             if(response.status == 200){
-                API.definirToken(responseData.token);
-                API.definirAuthType(authType);
+                API.setToken(responseData.token);
+                API.setAuthType(authType);
                 
                 const authResponse = await fetch(`${API.apiUrl}/`,API.apiOptions('GET'));                
                 if(authResponse.status == 204){

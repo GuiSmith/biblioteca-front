@@ -5,14 +5,13 @@ const ip = window.location.hostname;
 const apiUrl = `http://${ip}:5000`;
 // const apiUrl = `http://localhost:5000`;
 
-const token = Cookies.get('token') || '';
-const authType = Cookies.get('authType') || undefined;
-
-const definirToken = (tokenString) => {
+const getAuthType = () => Cookies.get('authType');
+const setToken = (tokenString) => {
     Cookies.set('token', tokenString);
 }
 
-const definirAuthType = (authTypeString) => {
+const getToken = () => Cookies.get('token');
+const setAuthType = (authTypeString) => {
     Cookies.set('authType', authTypeString)
 }
 
@@ -24,7 +23,9 @@ const apiOptions = (apiMethod, apiBody = {}) => {
         }
     }
 
-    if (token.length > 0) {
+    const token = getToken();
+
+    if (token && token.length > 0) {
         obj.headers['Authorization'] = `Bearer ${token}`;
     }
 
@@ -38,6 +39,7 @@ const apiOptions = (apiMethod, apiBody = {}) => {
             obj.body = JSON.stringify(strippedApiBody);
         }
     }
+
     return obj;
 }
 
@@ -45,6 +47,8 @@ const auth = async () => {
 
     const response = await fetch(`${apiUrl}/`, apiOptions('GET'));
     const responseCode = response.status;
+
+    console.log(responseCode == 204);
 
     if(responseCode == 204){
         return true;
@@ -237,4 +241,4 @@ const deletar = async (tabela, id) => {
     }
 }
 
-export default { apiUrl, token, definirToken, apiOptions, auth, definirAuthType, authType, search, selecionar, listar, deletar };
+export default { apiUrl, getToken, setToken, apiOptions, auth, setAuthType, getAuthType, search, selecionar, listar, deletar };
