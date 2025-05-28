@@ -1,5 +1,5 @@
 import { LivroLista, LivroView, LivroRegistro } from '@paginas/livro';
-import { CategoriaRegistro, CategoriaLista } from '@paginas/categoria';
+import { CategoriaRegistro, CategoriaLista, CategoriaView } from '@paginas/categoria';
 import { Login } from '@paginas/usuario';
 
 const rotas = [
@@ -11,6 +11,7 @@ const rotas = [
 	{ auth: false, path: '/categorias', element: <CategoriaLista /> },
 	{ auth: true, path: '/categoria/form/novo', element: <CategoriaRegistro /> },
 	{ auth: true, path: '/categoria/form/:id', element: <CategoriaRegistro /> },
+	{ auth: true, path: '/categoria/view/:id', element: <CategoriaView /> },
 	{ auth: false, path: '/login', element: <Login />}
 ];
 

@@ -10,11 +10,12 @@ import BotaoLink from '@componentes/BotaoLink';
 
 const CategoriaLista = () => {
 
-    const auth = API.auth();
-
     const [categorias, setCategorias] = useState([]);
 
     useEffect(() => {
+
+
+        // Listando categorias
         API.listar('categoria')
             .then(responseCategoria => {
                 if (responseCategoria.ok) {
@@ -37,9 +38,7 @@ const CategoriaLista = () => {
         <section className="container-fluid">
             <h1 className="text-center">Categorias</h1>
             <div className="d-flex flex-wrap justify-content-start gap-2 mb-3 mt-3">
-                {auth === true
-                    ? <BotaoLink label='Novo' to='/categoria/form/novo' className='btn-primary' />
-                    : ''}
+                <BotaoLink label='Novo' to='/categoria/form/novo' className='btn-primary' />
             </div>
             <article className="d-flex flex-wrap justify-content-start gap-2">
                 {categorias && (
@@ -59,6 +58,7 @@ const CategoriaLista = () => {
                     ))
                 )}
             </article>
+            <ToastContainer position="bottom-right" />
         </section>
     )
 };
