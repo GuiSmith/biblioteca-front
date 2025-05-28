@@ -33,3 +33,13 @@ body {
   cursor: pointer;
   user-select: none;
 }
+
+.table tbody tr {
+  cursor: pointer;
+  user-select: none;
+}
+
+.table tbody tr:hover {
+  opacity: 0.7;
+  transition: opacity 0.3s ease-out;
+}
