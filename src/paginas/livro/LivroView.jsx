@@ -136,7 +136,7 @@ const LivroView = () => {
 							}
 						</p>
 						<hr />
-						<div className='d-flex justify-content-start gap-2'>
+						<div className='d-flex flex-wrap justify-content-start gap-2'>
 							<BotaoLink label='Novo' to='/livro/form/novo' className='btn-primary' />
 							
 							<BotaoLink label='Editar' to={`/livro/form/${livro.id}`} className='btn-dark' />

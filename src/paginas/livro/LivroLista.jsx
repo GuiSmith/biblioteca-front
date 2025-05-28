@@ -1,23 +1,24 @@
+// Bibliotecas
 import { ToastContainer, toast } from 'react-toastify';
 import { useEffect, useState } from 'react';
 
+//Serviços
 import API from '@servicos/API';
-import Cartao from '@componentes/Cartao';
+
+// Componentes | UI
 import BotaoLink from '@componentes/BotaoLink';
-import BotaoAcao from '@componentes/BotaoAcao';
-import { useFetcher } from 'react-router-dom';
+import LivroCartao from '@ui/LivroCartao';
 
 const LivroLista = () => {
 
-    const endpoint = 'livro';
-    const completeUrl = `${API.apiUrl}/livro`;
-    const apiOptions = API.apiOptions('GET');
-
-    const [cartoes, setCartoes] = useState('');
     const [categorias, setCategorias] = useState([]);
+    const [livros, setLivros] = useState([]);
+
+    const auth = API.auth();
 
     // Categorias
     useEffect(() => {
+        // Categorias
         API.listar('categoria')
             .then(responseCategoria => {
                 if (responseCategoria.ok) {
@@ -38,67 +39,39 @@ const LivroLista = () => {
 
     // Livros
     useEffect(() => {
-
-        fetch(completeUrl, apiOptions)
-            .then(async response => {
-                const data = await response.json();
-
-                if (response.status !== 200) {
-                    toast.error(data.mensagem);
+        // Livros
+        API.listar('livro')
+            .then(responseLivro => {
+                if (responseLivro.ok) {
+                    setLivros(responseLivro.array);
                     return;
                 }
-
-                setCartoes(
-                    <div className='d-flex flex-wrap justify-content-center gap-3'>
-                        {data.map(async livro => {
-
-                            if (categorias.length > 0) {
-                                const categoria = categorias.find(categoria => livro.id_categoria = categoria.id);
-
-                                livro.categoria = categoria.nome ?? '';
-                            }else{
-                                livro.categoria = 'Carregando...';
-                            }
-
-                            const botoes = [
-                                <BotaoLink to={`/livro/view/${livro.id}`} label='Detalhes' className='btn-primary' />,
-                                <BotaoLink label='Emprestar' className='btn-success' />
-                            ];
-
-                            return (
-                                <div key={livro.id}>
-                                    <Cartao img={{ src: livro.foto, alt: `Imagem: ${livro.titulo}` }} titulo={livro.titulo} botoes={botoes} className='mb-3'>
-                                        <p className='text-muted'>
-                                            {livro.ativo ? <span className='text-dark'>Ativo</span> : <span className='text-muted'>Inativo</span>}
-                                            <br />
-                                            {livro.categoria}
-                                        </p>
-                                    </Cartao>
-                                </div>
-                            )
-                        })}
-                    </div>
-                )
+                if (responseLivro.error) {
+                    toast.error('Erro ao listar livros');
+                    return;
+                }
+                if (responseLivro.ok === false && responseLivro.error === false) {
+                    toast.warning(responseLivro.mensagem);
+                    return;
+                }
             })
-            .catch(error => {
-                toast.error('Erro ao buscar dados');
-                console.error('Error fetching data:', error);
-            });
+            .catch(error => toast.error('Erro ao listar livros'));
     }, [categorias]);
 
     return (
-        <article>
-            <div className='container-fluid'>
-                <div className='d-flex flex-wrap gap-3 justify-content-center'>
-                    <BotaoLink to='/livro/form/novo' label='Novo' className='btn-success' />
-                    <BotaoAcao label='Fazer algo' />
-                    <BotaoAcao label='Fazer algo' />
-                    <BotaoAcao label='Fazer algo' />
-                </div>
-                <div className='mt-3'>
-                    {cartoes}
-                </div>
+        <article className='container-fluid'>
+            <h1 className='text-center'>Livros</h1>
+            <div className='d-flex flex-wrap justify-content-start gap-3'>
+                {auth === true ? <BotaoLink to='/livro/form/novo' label='Novo' className='btn-primary' /> : ''}
             </div>
+            <article className='mt-3 d-flex flex-wrap justify-content-start gap-2'>
+                {livros && (
+                    livros.map(livro => {
+                        const nomeCategoria = categorias.find(categoria => categoria.id == livro.id_categoria)['nome'] ?? '';
+                        return (<LivroCartao key={livro.id} livro={livro} nomeCategoria={nomeCategoria} />)
+                    })
+                )}
+            </article>
             <ToastContainer position='bottom-right' />
         </article>
     )

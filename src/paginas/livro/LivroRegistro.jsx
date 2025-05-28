@@ -260,19 +260,13 @@ const LivroRegistro = () => {
 			<h2 className='text-center'>Livro</h2>
 			<form method='POST' onSubmit={handleSubmit(onSubmit)} className='form container alert alert-secondary position-relative'>
 				{/* Botões */}
-				<div className='mb-3 d-flex justify-content-start gap-2'>
-					{/* Novo */}
-					{/* <button type='button' className='btn btn-primary' onClick={handleClickNovo} >Novo</button> */}
+				<div className='mb-3 d-flex flex-wrap justify-content-start gap-2'>
 					<BotaoLink label='Novo' to='/livro/form/novo' className='btn-primary' />
-					{/* Salvar */}
 					<button type='submit' className='btn btn-success'>Salvar</button>
-					{/* Listar */}
 					<BotaoLink label='Listar' to='/livros' className='btn-secondary' />
-					{/* Detalhes */}
 					{watch('id') ? (
 						<BotaoLink label='Detalhes' to={`/livro/view/${watch('id')}`} className='btn-dark' />
 					) : ''}
-					{/* Deletar */}
 					{watch('id') ? (
 						<button type='button' className='btn btn-danger' onClick={(onDelete)}>Deletar</button>
 					) : ''}

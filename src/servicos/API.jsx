@@ -42,33 +42,14 @@ const apiOptions = (apiMethod, apiBody = {}) => {
 }
 
 const auth = async () => {
-    const endpoint = 'tabelas';
 
-    const response = await fetch(`${apiUrl}/${endpoint}`, apiOptions('GET'));
-    const responseCode = response.status.toString();
+    const response = await fetch(`${apiUrl}/`, apiOptions('GET'));
+    const responseCode = response.status;
 
-    if (responseCode.charAt(0) == 4) {
-        return {
-            ok: false,
-            error: false,
-            mensagem: 'Usuário não autenticado',
-        };
-    }
-
-    if (responseCode == 200) {
-        return {
-            ok: true,
-            error: false,
-            mensagem: 'Usuário autenticado'
-        }
-    }
-
-    if (responseCode.charAt(0) == 5) {
-        return {
-            ok: false,
-            error: true,
-            mensagem: response.mensagem
-        }
+    if(responseCode == 204){
+        return true;
+    }else{
+        return false;
     }
 };
 

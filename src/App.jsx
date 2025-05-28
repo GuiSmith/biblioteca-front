@@ -17,32 +17,6 @@ import API from '@servicos/API';
 
 function App() {
 
-  const location = useLocation();
-  const navigate = useNavigate();
-  const filePath = '/' + location.pathname.split('/')[1];
-
-  // useEffect(() => {
-  //   // Temporário, até criar tela e funções de login
-
-  //   API.auth()
-  //     .then(response => {
-  //       try {
-  //         const rotaAtual = rotas.find(rota => rota.path == filePath);
-  //         console.log(rotaAtual);
-  //         console.log(filePath);
-  //         if(rotaAtual){
-  //           if(response.ok == false && rotaAtual.auth == true){
-  //             // navigate(filePath == '/login' ? '/' : '/login');
-  //           }
-  //         }else{
-  //           // navigate('/pagina_inexistente');
-  //         }
-  //       } catch(error) {
-  //         toast("Erro de autenticação, contate o suporte");
-  //       }
-  //     });
-  // },[location.pathname]);
-
   return (
     <section className = 'app-container'>
       <BarraDeNavegacao />
