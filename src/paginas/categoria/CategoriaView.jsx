@@ -44,6 +44,31 @@ const CategoriaView = () => {
                     setCategoria(response.data);
                 }
             })
+
+        if(!id) return;
+
+        API.listar(`categoria/${id}/livros`)
+            .then(responseLivro => {
+                console.log(!responseLivro.ok && !responseLivro.error);
+                
+                if(responseLivro.ok){
+                    setLivros(responseLivro.array);
+                    return;
+                }
+
+                if(responseLivro.error){
+                    toast.error('Erro ao listar livros');
+                    return;
+                }
+
+                if(!responseLivro.ok && !responseLivro.error){
+                    toast.warning(`Livro: ${responseLivro.mensagem}`);
+                }
+            })
+            .catch(error => {
+                toast.error('Erro ao listar livros');
+                console.error(error);
+            })
     }, []);
 
     const handleDelete = async () => {
