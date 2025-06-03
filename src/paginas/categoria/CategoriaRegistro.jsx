@@ -29,23 +29,23 @@ const CategoriaRegistro = () => {
 	useEffect(() => {
 		const id = params.id;
 
-		if(!id){
+		if (!id) {
 			reset({ ...defaultValues });
 			return;
 		}
 
-		API.selecionar(endpoint,id)
+		API.selecionar(endpoint, id)
 			.then(responseCategoria => {
-				if(responseCategoria.error === true){
+				if (responseCategoria.error === true) {
 					toast.error('Erro ao buscar categoria');
 				}
 
-				if(responseCategoria.ok === false && responseCategoria.error === false){
+				if (responseCategoria.ok === false && responseCategoria.error === false) {
 					toast.warning('Categoria não encontrada');
 					navigate('/categoria/form/novo');
 				}
 
-				if(responseCategoria.ok === true){
+				if (responseCategoria.ok === true) {
 					reset(responseCategoria.data);
 				}
 			})
@@ -54,7 +54,41 @@ const CategoriaRegistro = () => {
 				toast.error('Erro ao selecionar categoria');
 			});
 
-	},[location.pathname]);
+	}, [location.pathname]);
+
+	const handleDelete = async () => {
+		try {
+			if (!watch('id')) return;
+
+			if(!confirm("Deseja mesmo excluir este registro?")){
+                return;
+            }
+
+			const id = watch('id');
+			const responseDelete = await API.deletar(endpoint, id);
+
+			//Erro
+			if (responseDelete.error) {
+				throw new Error(responseDelete.mensagem);	
+			}
+
+			// Sem sucesso
+			if(!responseDelete.error && !responseDelete.ok){
+				toast.warning(responseDelete.mensagem);
+				return;
+			}
+
+			// OK
+			if(responseDelete.ok){
+				toast.success('Categoria deletada com sucesso!');
+				navigate('/categorias');
+			}
+
+		} catch (error) {
+			console.error(error);
+			toast.error('Erro ao deletar categoria');
+		}
+	}
 
 	// Envio de formulário
 	const onSubmit = async (data) => {
@@ -62,46 +96,46 @@ const CategoriaRegistro = () => {
 			console.log(data);
 			console.log();
 
-			if(data.id > 0){
+			if (data.id > 0) {
 				const completeUrl = `${API.apiUrl}/${endpoint}/${data.id}`;
 				const method = 'PUT';
 
 				const responsePut = await fetch(completeUrl, API.apiOptions(method, data));
 				const dataPut = await responsePut.json();
 
-				if(responsePut.status == 200){
+				if (responsePut.status == 200) {
 					toast.success('Categoria atualizada!');
 					return;
 				}
 
-				if(responsePut.status == 500){
+				if (responsePut.status == 500) {
 					toast.error('Erro ao atualizar categoria, contate o suporte');
 					return;
 				}
 
-				if(![200,500].includes(responsePut.status)){
+				if (![200, 500].includes(responsePut.status)) {
 					toast.warning(dataPut.mensagem);
 					return;
 				}
-			}else{
+			} else {
 				const completeUrl = `${API.apiUrl}/${endpoint}`;
 				const method = 'POST';
 
 				const responsePost = await fetch(completeUrl, API.apiOptions(method, data));
 				const dataPost = await responsePost.json();
 
-				if(responsePost.status == 201){
+				if (responsePost.status == 201) {
 					toast.success('Categoria criada!');
 					navigate(`/categoria/view/${dataPost.id}`);
 					return;
 				}
 
-				if(responsePost.status == 500){
+				if (responsePost.status == 500) {
 					toast.error('Erro ao criar categoria, contate o suporte');
 					return;
 				}
 
-				if(![201,500].includes(responsePost.status)){
+				if (![201, 500].includes(responsePost.status)) {
 					toast.warning(dataPost.mensagem);
 					return;
 				}
@@ -115,7 +149,7 @@ const CategoriaRegistro = () => {
 	return (
 		<article>
 			<h2 className='text-center'>Categoria</h2>
-			<form method="POST" onSubmit ={handleSubmit(onSubmit)} className='form container alert alert-secondary'>
+			<form method="POST" onSubmit={handleSubmit(onSubmit)} className='form container alert alert-secondary'>
 				{/* Botões */}
 				<div className='mb-3 d-flex justify-content-start gap-2'>
 					<BotaoLink label='Novo' to='/categoria/form/novo' className='btn-primary' />
@@ -123,6 +157,9 @@ const CategoriaRegistro = () => {
 					<BotaoLink label='Listar' to='/categorias' className='btn-secondary' />
 					{watch('id') ? (
 						<BotaoLink label='Detalhes' to={`/categoria/view/${watch('id')}`} className='btn-dark' />
+					) : ''}
+					{watch('id') ? (
+						<button type="button" className='btn btn-danger' onClick={handleDelete}>Deletar</button>
 					) : ''}
 				</div>
 				{/* ID */}
@@ -141,7 +178,7 @@ const CategoriaRegistro = () => {
 					<textarea id='descricao' className='form-control' {...register('descricao', { required: true })} />
 				</div>
 			</form>
-			<ToastContainer position="bottom-right"/>
+			<ToastContainer position="bottom-right" />
 		</article>
 	);
 

@@ -18,9 +18,67 @@ const CategoriaView = () => {
     }
 
     const endpoint = `categoria`;
+    const navigate = useNavigate();
 
     const [categoria, setCategoria] = useState({});
     const [livros, setLivros] = useState([]);
+
+    // Buscar Categorias e livros
+    useEffect(() => {
+        API.selecionar(endpoint, id)
+            .then(response => {
+                // Erro
+                if (response.error) {
+                    toast.error('Erro ao listar categorias e livros');
+                    return;
+                }
+
+                // Aviso
+                if (!response.ok && !response.error) {
+                    toast.warning(response.mensagem);
+                    console.log(response);
+                }
+
+                // OK
+                if (response.ok) {
+                    setCategoria(response.data);
+                }
+            })
+    }, []);
+
+    const handleDelete = async () => {
+        try {
+            if (!id) return;
+
+            if(!confirm("Deseja mesmo excluir este registro?")){
+                return;
+            }
+
+            const responseDelete = await API.deletar(endpoint, id);
+
+            //Erro
+            if (responseDelete.error) {
+                toast.error("Erro ao deletar categoria");
+                return;
+            }
+
+            // Sem sucesso
+            if (!responseDelete.error && !responseDelete.ok) {
+                toast.warning(responseDelete.mensagem);
+                return;
+            }
+
+            // OK
+            if (responseDelete.ok) {
+                toast.success('Categoria deletada com sucesso!');
+                navigate('/categorias');
+            }
+
+        } catch (error) {
+            console.error(error);
+            toast.error('Erro ao deletar categoria');
+        }
+    }
 
     const botoes = [
         {
@@ -37,31 +95,9 @@ const CategoriaView = () => {
         },
         {
             auth: true,
-            jsx: <button type="button" className="btn btn-danger">Deletar</button>
+            jsx: <button type="button" className="btn btn-danger" onClick={handleDelete}>Deletar</button>
         }
     ];
-
-    // Buscar Categorias e livros
-    useEffect(() => {
-        API.selecionar(endpoint, id)
-            .then(response => {
-                // Erro
-                if (response.error) {
-                    toast.error('Erro ao listar categorias e livros');
-                    return;
-                }
-
-                // Aviso
-                if (!response.ok && !response.error) {
-                    toast.warning(response.mensagem);
-                }
-
-                // OK
-                if (response.ok) {
-                    setCategoria(response.data);
-                }
-            })
-    }, []);
 
     return (
         <article className="container">
@@ -77,7 +113,7 @@ const CategoriaView = () => {
             {/* Livros */}
             <div className="">
                 <h2 className="text-center">Livros</h2>
-                
+
             </div>
         </article>
     )
