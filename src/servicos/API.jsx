@@ -136,7 +136,7 @@ const selecionar = async (tabela, id) => {
                 ok: false,
                 error: false,
                 data: {},
-                mensagem: ``,
+                mensagem: `Registro não encontrado`,
             };
         }
 
