@@ -189,7 +189,16 @@ const listar = async (tabela) => {
                 ok: false,
                 error: false,
                 array: [],
-                mensagem: ``,
+                mensagem: `Nenhum registro encontrado`,
+            };
+        }
+
+        if(response.status == 500){
+            return {
+                ok: false,
+                error: true,
+                array: [],
+                mensagem: response.mensagem
             };
         }
     } catch (error) {
