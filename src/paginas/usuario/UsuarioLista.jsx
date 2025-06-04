@@ -38,7 +38,7 @@ const UsuarioLista = () => {
 
     return (
         <article className='container-fluid'>
-            <h1>Lista de Usuários</h1>
+            <h2 className="text-center">Usuários</h2>
             <div className='d-flex flex-wrap justify-content-start gap-2 mb-3 mt-3'>
                 <BotaoLink label='Novo' to='/usuario/form/novo' className='btn-primary' />
             </div>

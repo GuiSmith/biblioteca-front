@@ -43,16 +43,16 @@ const CategoriaLista = () => {
     }, []);
 
     return (
-        <section className="container">
+        <section className="container-fluid">
             <h1 className="text-center">Categorias</h1>
             <div className="d-flex flex-wrap justify-content-start gap-2 mb-3 mt-3">
                 <BotaoLink label='Novo' to='/categoria/form/novo' className='btn-primary' />
             </div>
-            <article className="table-container">
+            <article className="table-container table-responsive">
                 {!categorias
                     ? <p className="text-center">Carregando...</p>
                     : (
-                        <table className="table table-stripped table-dark">
+                        <table className="table table-striped table-dark table-hover">
                             <thead>
                                 <tr>
                                     {Object.values(colunas).map((coluna,index) => <th key={index}>{coluna}</th>)}

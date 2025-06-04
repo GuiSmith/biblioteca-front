@@ -58,11 +58,11 @@ const EditoraLista = () => {
             <div className='d-flex flex-wrap justify-content-start gap-2 mb-3 mt-3'>
                 <BotaoLink label='Nova' to='/editora/form/novo' className='btn-primary' />
             </div>
-            <article className='table-container'>
+            <article className='table-container table-responsive'>
                 {!editoras.length
                     ? <p className="text-center">Carregando...</p>
                     : (
-                        <table className="table table-striped table-dark">
+                        <table className="table table-striped table-dark table-hover">
                             <thead>
                                 <tr>
                                     {Object.keys(colunas).map((coluna, index) => (

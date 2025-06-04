@@ -38,7 +38,7 @@ const FuncionarioLista = () => {
 
     return (
         <article className='container-fluid'>
-            <h1>Lista de Funcionários</h1>
+            <h2 className="text-center">Funcionários</h2>
             <div className='d-flex flex-wrap justify-content-start gap-2 mb-3 mt-3'>
                 <BotaoLink label='Novo' to='/funcionario/form/novo' className='btn-primary' />
             </div>
@@ -46,7 +46,7 @@ const FuncionarioLista = () => {
                 {!funcionarios.length
                     ? <p className="text-center">Carregando...</p>
                     : (
-                        <table className="table table-striped table-dark">
+                        <table className="table table-striped table-dark table-hover">
                             <thead>
                                 <tr>
                                     {Object.keys(funcionarioService.colunas).map((coluna, index) => (
