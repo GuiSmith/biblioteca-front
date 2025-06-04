@@ -68,7 +68,7 @@ const UsuarioRegistro = () => {
                 const completeUrl = `${API.apiUrl}/${endpoint}/${data.id}`;
                 const method = 'PUT';
 
-                const responsePut = await fetch(completeUrl, method, data);
+                const responsePut = await fetch(completeUrl, API.apiOptions(method, data));
                 const dataPut = await responsePut.json();
 
                 // OK
