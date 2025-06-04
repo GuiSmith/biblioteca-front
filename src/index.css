@@ -1,6 +1,7 @@
 body {
-  background-color: #242424 !important;
-  color: rgba(255, 255, 255, 0.87);
+  background: linear-gradient(to bottom, #ddd, #fff) !important;
+   min-height: 100vh;
+  /* color: rgba(255, 255, 255, 0.87); */
   color-scheme: light dark;
   font-family: 'Sans-serif';
   padding: 0;
@@ -34,12 +35,12 @@ body {
   user-select: none;
 }
 
+.table-container {
+  /* border-radius: 15px !important; */
+  /* box-shadow: 0 4px 24px rgba(0, 0, 0, 0.16), 0 1.5px 1.5px rgba(0, 0, 0, 0.10); */
+}
+
 .table tbody tr {
   cursor: pointer;
   user-select: none;
-}
-
-.table tbody tr:hover {
-  opacity: 0.7;
-  transition: opacity 0.3s ease-out;
 }
