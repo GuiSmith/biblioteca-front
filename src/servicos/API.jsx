@@ -48,8 +48,6 @@ const auth = async () => {
     const response = await fetch(`${apiUrl}/`, apiOptions('GET'));
     const responseCode = response.status;
 
-    console.log(responseCode == 204);
-
     if(responseCode == 204){
         return true;
     }else{
@@ -216,6 +214,15 @@ const deletar = async (tabela, id) => {
     try {
 
         const response = await fetch(`${apiUrl}/${tabela}/${id}`, apiOptions('DELETE'));
+
+        if(response.status === 404){
+            return {
+                ok: false,
+                error: false,
+                mensagem: 'Registro não encontrado'
+            };
+        }
+        
         const data = await response.json();
 
         if (response.status === 200) {

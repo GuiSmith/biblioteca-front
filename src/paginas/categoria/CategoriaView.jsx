@@ -36,7 +36,6 @@ const CategoriaView = () => {
                 // Aviso
                 if (!response.ok && !response.error) {
                     toast.warning(response.mensagem);
-                    console.log(response);
                 }
 
                 // OK
@@ -49,7 +48,6 @@ const CategoriaView = () => {
 
         API.listar(`categoria/${id}/livros`)
             .then(responseLivro => {
-                console.log(!responseLivro.ok && !responseLivro.error);
                 
                 if(responseLivro.ok){
                     setLivros(responseLivro.array);
@@ -108,19 +106,19 @@ const CategoriaView = () => {
     const botoes = [
         {
             auth: true,
-            jsx: <BotaoLink label='Novo' to='/categoria/form/novo' className='btn-primary' />,
+            jsx: <BotaoLink key='botao-novo' label='Novo' to='/categoria/form/novo' className='btn-primary' />,
         },
         {
             auth: true,
-            jsx: <BotaoLink label='Editar' to={`/categoria/form/${id}`} className='btn-dark' />
+            jsx: <BotaoLink key='botao-editar' label='Editar' to={`/categoria/form/${id}`} className='btn-dark' />
         },
         {
             auth: false,
-            jsx: <BotaoLink label='Listar' to='/categorias' className='btn-secondary' />
+            jsx: <BotaoLink key='botao-listar' label='Listar' to='/categorias' className='btn-secondary' />
         },
         {
             auth: true,
-            jsx: <button type="button" className="btn btn-danger" onClick={handleDelete}>Deletar</button>
+            jsx: <button key='botao-deletar' type="button" className="btn btn-danger" onClick={handleDelete}>Deletar</button>
         }
     ];
 
@@ -138,8 +136,8 @@ const CategoriaView = () => {
             {/* Livros */}
             <div className="">
                 <h2 className="text-center">Livros</h2>
-
             </div>
+            <ToastContainer position="bottom-right" />
         </article>
     )
 };

@@ -51,6 +51,26 @@ const BarraDeNavegacao = () => {
                         </li>
                         <li className="nav-item">
                             <NavLink
+                                to='/editoras'
+                                className={({ isActive }) => 
+                                    `nav-link ${isActive ? 'active' : ''}`
+                                }
+                            >
+                                Editoras
+                            </NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink
+                                to="/funcionarios"
+                                className={({ isActive }) =>
+                                    `nav-link ${isActive ? 'active' : ''}`
+                                }
+                            >
+                                Funcionários
+                            </NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink
                                 to="/usuarios"
                                 className={({ isActive }) =>
                                     `nav-link ${isActive ? 'active' : ''}`

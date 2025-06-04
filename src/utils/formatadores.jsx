@@ -53,4 +53,10 @@ const formatDatetime = (dateString) => {
     return format(parsedDate, 'dd/MM/yyyy HH:mm:ss');
 }
 
-export { isDate, formatDate, formatDatetime };
+// Formatador de CNPJ
+const formatCNPJ = (cnpj) => {
+    if (!cnpj) return '';
+    return cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
+}
+
+export { isDate, formatDate, formatDatetime, formatCNPJ };
