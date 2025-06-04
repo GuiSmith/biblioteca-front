@@ -2,7 +2,7 @@ import { NavLink } from 'react-router-dom';
 
 const BarraDeNavegacao = () => {
     return (
-        <nav className="navbar navbar-expand-lg navbar-light bg-light">
+        <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
             <div className="container-fluid">
                 <NavLink className="navbar-brand" to="/">Biblioteca</NavLink>
                 <button
