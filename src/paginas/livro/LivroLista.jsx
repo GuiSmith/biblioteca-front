@@ -14,8 +14,6 @@ const LivroLista = () => {
     const [categorias, setCategorias] = useState([]);
     const [livros, setLivros] = useState([]);
 
-    const auth = API.auth();
-
     // Categorias
     useEffect(() => {
         // Categorias
@@ -62,7 +60,7 @@ const LivroLista = () => {
         <article className='container-fluid'>
             <h1 className='text-center'>Livros</h1>
             <div className='d-flex flex-wrap justify-content-start gap-3'>
-                {auth === true ? <BotaoLink to='/livro/form/novo' label='Novo' className='btn-primary' /> : ''}
+                <BotaoLink to='/livro/form/novo' label='Novo' className='btn-primary' />
             </div>
             <article className='mt-3 d-flex flex-wrap justify-content-start gap-2'>
                 {livros && (

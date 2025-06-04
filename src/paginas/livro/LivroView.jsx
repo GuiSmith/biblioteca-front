@@ -143,7 +143,7 @@ const LivroView = () => {
 
 							<BotaoLink label='Listar' to='/livros' className='btn-secondary' />
 							
-							<button type='button' className='btn btn-danger' disabled={API.authType !== 'funcionario' ? true : false} onClick={handleDelete}>Deletar</button>
+							<button type='button' className='btn btn-danger' onClick={handleDelete}>Deletar</button>
 						</div>
 					</>
 				)}
