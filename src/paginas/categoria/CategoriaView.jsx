@@ -6,8 +6,9 @@ import { useParams, useNavigate } from "react-router-dom";
 // Serviços
 import API from '@servicos/API';
 
-// Componentes
+// Componentes | UI
 import BotaoLink from '@componentes/BotaoLink';
+import LivroCartao from '@ui/LivroCartao';
 
 const CategoriaView = () => {
 
@@ -23,7 +24,7 @@ const CategoriaView = () => {
     const [categoria, setCategoria] = useState({});
     const [livros, setLivros] = useState([]);
 
-    // Buscar Categorias e livros
+    // Buscar Categoria
     useEffect(() => {
         API.selecionar(endpoint, id)
             .then(response => {
@@ -43,23 +44,26 @@ const CategoriaView = () => {
                     setCategoria(response.data);
                 }
             })
+    }, []);
 
-        if(!id) return;
+    // Buscar livro
+    useEffect(() => {
+        if (!categoria) return;
 
         API.listar(`categoria/${id}/livros`)
             .then(responseLivro => {
-                
-                if(responseLivro.ok){
+
+                if (responseLivro.ok) {
                     setLivros(responseLivro.array);
                     return;
                 }
 
-                if(responseLivro.error){
+                if (responseLivro.error) {
                     toast.error('Erro ao listar livros');
                     return;
                 }
 
-                if(!responseLivro.ok && !responseLivro.error){
+                if (!responseLivro.ok && !responseLivro.error) {
                     toast.warning(`Livro: ${responseLivro.mensagem}`);
                 }
             })
@@ -67,13 +71,13 @@ const CategoriaView = () => {
                 toast.error('Erro ao listar livros');
                 console.error(error);
             })
-    }, []);
+    }, [categoria]);
 
     const handleDelete = async () => {
         try {
             if (!id) return;
 
-            if(!confirm("Deseja mesmo excluir este registro?")){
+            if (!confirm("Deseja mesmo excluir este registro?")) {
                 return;
             }
 
@@ -136,6 +140,12 @@ const CategoriaView = () => {
             {/* Livros */}
             <div className="">
                 <h2 className="text-center">Livros</h2>
+                <div className="d-flex flex-wrap justify-content-start gap-3">
+                    {/* {livros.map((livro) => <LivroCartao livro={livro} nomeCategoria={categoria.nome} />)} */}
+                   {livros ? console.log(typeof livros.livros) : ''}
+                   {livros ? console.log(livros.livros) : ''}
+                </div>
+                
             </div>
             <ToastContainer position="bottom-right" />
         </article>

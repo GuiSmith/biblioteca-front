@@ -62,15 +62,7 @@ const LivroLista = () => {
     // Filtrar livros
     useEffect(() => {
         try {
-            if (idCategoriaSelecionada == 0) return;
-
-            const novosLivrosFiltrados = livros.filter(livro => livro.id_categoria == idCategoriaSelecionada);
-
-            if(novosLivrosFiltrados.length == 0){
-                toast.warning('Nenhum livro encontrado!');
-            }
-
-            setLivrosFiltrados(novosLivrosFiltrados);
+            setLivrosFiltrados(idCategoriaSelecionada == 0 ? livros : livros.filter(livro => livro.id_categoria == idCategoriaSelecionada));
         } catch (error) {
             let mensagemErro = 'Erro ao filtrar categorias';
             console.log(mensagemErro);
@@ -81,8 +73,12 @@ const LivroLista = () => {
 
     const handleSelecionarCategoria = async (categoria) => {
         try {
-            if(categoria.id > 0){
-                setIdCategoriaSelecionada(categoria.id);
+            if (categoria.id > 0) {
+                if (categoria.id == idCategoriaSelecionada) {
+                    setIdCategoriaSelecionada(0);
+                } else {
+                    setIdCategoriaSelecionada(categoria.id);
+                }
             }
         } catch (error) {
             let mensagemErro = 'Erro ao selecionar categoria';
@@ -102,12 +98,13 @@ const LivroLista = () => {
             {/* Filtros */}
             <div className='mb-3 d-flex flex-wrap justify-content-center gap-2'>
                 {categorias.map(categoria => (
-                    <button type='button' className={`btn btn-dark ${(categoria.id == idCategoriaSelecionada || idCategoriaSelecionada == 0) ? 'opacity-100' : 'opacity-75'}`} onClick={() => handleSelecionarCategoria(categoria)}>{categoria.nome}</button>
+                    <button key={categoria.id} type='button' className={`btn btn-dark ${(categoria.id == idCategoriaSelecionada || idCategoriaSelecionada == 0) ? 'opacity-100' : 'opacity-75'}`} onClick={() => handleSelecionarCategoria(categoria)}>{categoria.nome}</button>
                 ))}
             </div>
             <article className='mt-3 d-flex flex-wrap justify-content-start gap-2'>
                 {livrosFiltrados && (
                     livrosFiltrados.map(livro => {
+                        // const categoria = categorias.find(categoria => categoria.id == livro.id_categoria);
                         const nomeCategoria = categorias.find(categoria => categoria.id == livro.id_categoria)['nome'] ?? '';
                         return (<LivroCartao key={livro.id} livro={livro} nomeCategoria={nomeCategoria} />)
                     })
