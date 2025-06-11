@@ -45,8 +45,12 @@ const apiOptions = (apiMethod, apiBody = {}) => {
 
 const auth = async () => {
 
-    const response = await fetch(`${apiUrl}/`, apiOptions('GET'));
+    const completeUrl = `${apiUrl}/`;
+
+    const response = await fetch(completeUrl, apiOptions('GET'));
     const responseCode = response.status;
+
+    console.log(completeUrl, response, apiOptions('GET'));
 
     if(responseCode == 204){
         return true;
