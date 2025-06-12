@@ -3,6 +3,7 @@ import { CategoriaRegistro, CategoriaLista, CategoriaView } from '@paginas/categ
 import { Login, UsuarioLista, UsuarioView, UsuarioRegistro } from '@paginas/usuario';
 import { FuncionarioLista, FuncionarioRegistro } from './paginas/funcionario';
 import { EditoraLista, EditoraRegistro } from './paginas/editora';
+import { EmprestimoRegistro } from './paginas/emprestimo';
 
 const rotas = [
 	{ auth: true, path: '/', element: <LivroLista /> },
@@ -26,6 +27,7 @@ const rotas = [
 	{ auth: false, path: '/editoras', element: <EditoraLista /> },
 	{ auth: true, path: '/editora/form/novo', element: <EditoraRegistro /> },
 	{ auth: true, path: '/editora/form/:id', element: <EditoraRegistro /> },
+	{ auth: true, path: '/emprestimo/form/:id', element: <EmprestimoRegistro />},
 ];
 
 export default rotas;

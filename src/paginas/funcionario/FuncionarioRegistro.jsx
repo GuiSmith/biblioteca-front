@@ -19,8 +19,16 @@ const FuncionarioRegistro = () => {
         nome: '',
         cpf: '',
         email: '',
-        senha: ''
+        senha: '',
+        data_contratacao: '',
+        data_demissao: '',
+        data_nascimento: '',
+        salario: '',
     };
+
+    const notAllowedValues = [
+        'data_demissao',
+    ];
 
     const endpoint = 'funcionario';
     const navigate = useNavigate();
@@ -59,7 +67,7 @@ const FuncionarioRegistro = () => {
     const onSubmit = async (data) => {
         // Não enviando campos com valores padrão
         for (const item in data) {
-            if (data[item] === defaultValues[item]) {
+            if (data[item] === defaultValues[item] || notAllowedValues.includes(item)) {
                 delete data[item];
             }
         }
@@ -135,7 +143,7 @@ const FuncionarioRegistro = () => {
                 {/* ID */}
                 <div className="mb-3">
                     <label htmlFor="id" className="form-label">ID</label>
-                    <input type="text" className="form-control" id="id" {...register("id")} disabled />
+                    <input type="text" className="form-control" id="id" value={watch('id') ?? 0} disabled />
                 </div>
                 {/* Ativo */}
                 <div className="mb-3 form-check form-switch">
@@ -161,6 +169,26 @@ const FuncionarioRegistro = () => {
                 <div className="mb-3">
                     <label htmlFor="cpf" className="form-label">CPF</label>
                     <input type="text" className="form-control" id="cpf" {...register("cpf")} />
+                </div>
+                {/* Data contratação */}
+                <div className="mb-3">
+                    <label htmlFor="data_contratacao" className="form-label">Data contratação</label>
+                    <input type="date" className="form-control" id="data_contratacao" {...register("data_contratacao")} />
+                </div>
+                {/* Salário */}
+                <div className="mb-3">
+                    <label htmlFor="salario" className="form-label">Salário</label>
+                    <input type="number" inputMode="decimal" className="form-control" id="salario" {...register("salario", { valueAsNumber: true })} />
+                </div>
+                {/* Data demissão */}
+                <div className="mb-3">
+                    <label htmlFor="data_demissao" className="form-label">Data demissão</label>
+                    <input type="date" className="form-control" id="data_demissao" {...register('data_')} readOnly disabled />
+                </div>
+                {/* Data nascimento */}
+                <div className="mb-3">
+                    <label htmlFor="data_nascimento" className="form-label">Data nascimento</label>
+                    <input type="date" className="form-control" id="data_nascimento" {...register("data_nascimento")} />
                 </div>
             </form>
             <ToastContainer position = "bottom-right" />

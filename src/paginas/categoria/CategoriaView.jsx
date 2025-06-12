@@ -22,7 +22,7 @@ const CategoriaView = () => {
     const navigate = useNavigate();
 
     const [categoria, setCategoria] = useState({});
-    const [livros, setLivros] = useState([]);
+    const [livros, setLivros] = useState(null);
 
     // Buscar Categoria
     useEffect(() => {
@@ -50,22 +50,33 @@ const CategoriaView = () => {
     useEffect(() => {
         if (!categoria) return;
 
-        API.listar(`categoria/${id}/livros`)
-            .then(responseLivro => {
+        const completeUrl = `${API.apiUrl}/categoria/${id}/livros`;
 
-                if (responseLivro.ok) {
-                    setLivros(responseLivro.array);
+        fetch(completeUrl,API.apiOptions('GET'))
+            .then(async response => {
+
+                console.log(response);
+                console.log();
+
+                if (response.status === 500) {
+                    toast.error('Erro ao buscar livros');
                     return;
                 }
 
-                if (responseLivro.error) {
-                    toast.error('Erro ao listar livros');
+                if(response.status == 200) {
+                    const data = await response.json();
+                    setLivros(data.livros);
                     return;
                 }
 
-                if (!responseLivro.ok && !responseLivro.error) {
-                    toast.warning(`Livro: ${responseLivro.mensagem}`);
+                if(response.status == 204) {
+                    setLivros([]);
+                    return;
                 }
+
+                const data = await response.json();
+                toast.warning(data.mensagem || 'Não foi possível listar os livros');
+
             })
             .catch(error => {
                 toast.error('Erro ao listar livros');
@@ -140,10 +151,13 @@ const CategoriaView = () => {
             {/* Livros */}
             <div className="">
                 <h2 className="text-center">Livros</h2>
-                <div className="d-flex flex-wrap justify-content-start gap-3">
-                    {/* {livros.map((livro) => <LivroCartao livro={livro} nomeCategoria={categoria.nome} />)} */}
-                   {livros ? console.log(typeof livros.livros) : ''}
-                   {livros ? console.log(livros.livros) : ''}
+                <div className="d-flex flex-wrap justify-content-center gap-3">
+                    {livros == null
+                        ? <p>Carregando...</p>
+                        : livros.length === 0
+                            ? <p>Nenhum livro cadastrado nesta categoria</p>
+                            : livros.map((livro) => <LivroCartao key={livro.id} livro={livro} nomeCategoria={categoria.nome} />) 
+                    }
                 </div>
                 
             </div>
