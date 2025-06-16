@@ -3,6 +3,9 @@ import { ToastContainer, toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 
+// Contextos
+import { useAuth } from '@contextos/AuthContexto';
+
 //Serviços
 import API from '@servicos/API';
 
@@ -12,16 +15,15 @@ import BotaoLink from '@componentes/BotaoLink';
 const CategoriaLista = () => {
 
     const [categorias, setCategorias] = useState([]);
+    const navigate = useNavigate();
+    const { isAuthenticated } = useAuth();
 
     const colunas = {
         id: 'ID',
         nome: 'Nome',
     };
 
-    const navigate = useNavigate();
-
     useEffect(() => {
-
 
         // Listando categorias
         API.listar('categoria')
@@ -42,11 +44,20 @@ const CategoriaLista = () => {
             .catch(error => toast.error('Erro ao listar categorias'));
     }, []);
 
+    const botoes = [
+        {
+            auth: true,
+            jsx: <BotaoLink label='Novo' to='/categoria/form/novo' className='btn-primary' />
+        },
+    ];
+
     return (
         <section className="container-fluid">
             <h1 className="text-center">Categorias</h1>
             <div className="d-flex flex-wrap justify-content-start gap-2 mb-3 mt-3">
-                <BotaoLink label='Novo' to='/categoria/form/novo' className='btn-primary' />
+                {botoes && (
+                    botoes.map((botao,index) => (!botao.auth || (botao.auth && isAuthenticated)) ? <span key={index}>{botao.jsx}</span> : '')
+                )}
             </div>
             <article className="table-container table-responsive">
                 {!categorias

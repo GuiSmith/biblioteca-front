@@ -3,6 +3,9 @@ import { ToastContainer, toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
+// Contextos
+import { useAuth } from '@contextos/AuthContexto';
+
 // Serviços
 import API from '@servicos/API';
 
@@ -20,6 +23,7 @@ const CategoriaView = () => {
 
     const endpoint = `categoria`;
     const navigate = useNavigate();
+    const { isAuthenticated } = useAuth();
 
     const [categoria, setCategoria] = useState({});
     const [livros, setLivros] = useState(null);
@@ -145,7 +149,10 @@ const CategoriaView = () => {
                 </h1>
                 <p style={{ textAlign: 'justify', textIndent: '1rem' }}>{categoria.descricao}</p>
                 <div className="d-flex flex-wrap justify-content-start gap-2">
-                    {botoes.map(botao => botao.jsx)}
+                    {botoes && (
+                        botoes.map((botao,index) => (!botao.auth || (botao.auth && isAuthenticated)) ? <span key={index}>{botao.jsx}</span> : '')
+                    )}
+                    {/* {botoes.map(botao => botao.jsx)} */}
                 </div>
             </div>
             {/* Livros */}
