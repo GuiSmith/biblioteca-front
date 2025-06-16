@@ -19,7 +19,7 @@ const rotas = [
 	{ auth: true, path: '/usuarios', element: <UsuarioLista /> },
 	{ auth: true, path: '/usuario/view/:id', element: <UsuarioView /> },
 	{ auth: true, path: '/usuario/form/:id', element: <UsuarioRegistro /> },
-	{ auth: true, path: '/usuario/form/novo', element: <UsuarioRegistro /> },
+	{ auth: false, path: '/usuario/form/novo', element: <UsuarioRegistro /> },
 	{ auth: true, path: '/funcionarios', element: <FuncionarioLista /> },
 	// { auth: true, path: '/funcionario/view/:id', element: <FuncionarioLista /> },
 	{ auth: true, path: '/funcionario/form/:id', element: <FuncionarioRegistro /> },

@@ -3,14 +3,17 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { ToastContainer, toast } from 'react-toastify';
 
+// Contextos
+import { useAuth } from '@contextos/AuthContexto';
+
 // Serviços
 import API from '@servicos/API';
 
 const Login = () => {
 
     const { register, handleSubmit } = useForm();
-
     const navigate = useNavigate();
+    const { handleLoginSuccess } = useAuth();
 
     const onSubmit = async (data) => {
 
@@ -25,21 +28,15 @@ const Login = () => {
             const endpoint = `${authType}/login`;
             const completeUrl = `${API.apiUrl}/${endpoint}`;
 
-            const response = await fetch(completeUrl,API.apiOptions('POST',data));
+            const response = await fetch(completeUrl, API.apiOptions('POST', data));
             const responseData = await response.json();
 
-            if(response.status == 200){
-                API.setToken(responseData.token);
-                API.setAuthType(authType);
-                
-                const authResponse = await fetch(`${API.apiUrl}/`,API.apiOptions('GET'));                
-                if(authResponse.status == 204){
-                    toast.success('Login realizado com sucesso');
-                    navigate('/');
-                }else{
-                    toast.error('Erro ao realizar login, contate o suporte!');
-                    console.error('Login por e-mail e senha realizado, mas autenticação falhou!');
-                }
+            if (response.status == 200) {
+
+                handleLoginSuccess({ token: responseData.token, authType });
+                toast.success('Login realizado');
+                navigate('/');
+
                 return;
             }
 
