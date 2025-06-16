@@ -82,7 +82,7 @@ const LivroView = () => {
 		}
 
 		return (
-			<table className='table table-stripped table-dark'>
+			<table className='table table-striped table-dark table-hover'>
 				<thead>
 					<tr>
 						{Object.entries(dados).map(([chave, valor]) => <th key={chave}>{valor}</th>)}
