@@ -1,6 +1,55 @@
 import { NavLink } from 'react-router-dom';
 
+// Contextos
+import { useAuth } from '@contextos/AuthContexto';
+
 const BarraDeNavegacao = () => {
+
+    const { isAuthenticated, contextAuthType } = useAuth();
+
+    const links = [
+        {
+            auth: false,
+            to: '/livros',
+            text: 'Livros'
+        },
+        {
+            auth: false,
+            to: '/autores',
+            text: 'Autores'
+        },
+        {
+            auth: false,
+            to: '/categorias',
+            text: 'Categorias'
+        },
+        {
+            auth: false,
+            to: '/editoras',
+            text: 'Editoras'
+        },
+        {
+            auth: true,
+            to: '/funcionarios',
+            text: 'Funcionários'
+        },
+        {
+            auth: true,
+            to: '/usuarios',
+            text: 'Usuários'
+        },
+        {
+            auth: true,
+            to: '/multas',
+            text: 'Multas'
+        },
+        {
+            auth: true,
+            to: '/logs',
+            text: 'Logs'
+        }
+    ];
+
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
             <div className="container-fluid">
@@ -19,98 +68,22 @@ const BarraDeNavegacao = () => {
 
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav me-auto">
-                        <li className="nav-item">
-                            <NavLink
-                                to="/livros"
-                                className={({ isActive }) =>
-                                    `nav-link ${isActive ? 'active' : ''}`
-                                }
-                            >
-                                Livros
-                            </NavLink>
-                        </li>
-                        <li className="nav-item">
-                            <NavLink
-                                to="/autores"
-                                className={({ isActive }) =>
-                                    `nav-link ${isActive ? 'active' : ''}`
-                                }
-                            >
-                                Autores
-                            </NavLink>
-                        </li>
-                        <li className="nav-item">
-                            <NavLink
-                                to='/categorias'
-                                className={({ isActive }) => 
-                                    `nav-link ${isActive ? 'active' : ''}`
-                                }
-                            >
-                                Categorias
-                            </NavLink>
-                        </li>
-                        <li className="nav-item">
-                            <NavLink
-                                to='/editoras'
-                                className={({ isActive }) => 
-                                    `nav-link ${isActive ? 'active' : ''}`
-                                }
-                            >
-                                Editoras
-                            </NavLink>
-                        </li>
-                        <li className="nav-item">
-                            <NavLink
-                                to="/funcionarios"
-                                className={({ isActive }) =>
-                                    `nav-link ${isActive ? 'active' : ''}`
-                                }
-                            >
-                                Funcionários
-                            </NavLink>
-                        </li>
-                        <li className="nav-item">
-                            <NavLink
-                                to="/usuarios"
-                                className={({ isActive }) =>
-                                    `nav-link ${isActive ? 'active' : ''}`
-                                }
-                            >
-                                Usuários
-                            </NavLink>
-                        </li>
-                        <li className="nav-item">
-                            <NavLink
-                                to="/multas"
-                                className={({ isActive }) =>
-                                    `nav-link ${isActive ? 'active' : ''}`
-                                }
-                            >
-                                Multas
-                            </NavLink>
-                        </li>
-                        <li className="nav-item">
-                            <NavLink
-                                to="/logs"
-                                className={({ isActive }) =>
-                                    `nav-link ${isActive ? 'active' : ''}`
-                                }
-                            >
-                                Logs
-                            </NavLink>
-                        </li>
+                        {links.map((link, index) => (!link.auth || (link.auth && isAuthenticated && contextAuthType == 'funcionario')) ? <NavLink key={index} to={link.to} className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>{link.text}</NavLink> : '')}
                     </ul>
                     <ul className="navbar-nav ms-auto">
-                        <li className="nav-item">
-                            <NavLink
-                                to="/login"
-                                className={({ isActive }) =>
-                                    `nav-link ${isActive ? 'active' : ''}`
-                                }
-                            >
-                                Entrar
-                            </NavLink>
-                        </li>
+                        {!isAuthenticated ?
+                            <li className="nav-item">
+                                <NavLink to="/login" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} >
+                                    Entrar
+                                </NavLink>
+                            </li>
+                            :
+                            <li className='nav-item'>
+                                <NavLink to='/logout' className={({isActive}) => `nav-link ${isActive ? 'active' : ''}`}>
+                                    Sair
+                                </NavLink>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>

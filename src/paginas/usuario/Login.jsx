@@ -35,7 +35,7 @@ const Login = () => {
 
                 handleLoginSuccess({ token: responseData.token, newAuthType: authType });
                 toast.success('Login realizado');
-                navigate('/');
+                navigate('/livros');
 
                 return;
             }
