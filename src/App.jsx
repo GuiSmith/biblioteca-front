@@ -38,11 +38,12 @@ function App() {
       toast.warn('Faça login para continuar!');
       navigate('/login');
     }
-  }, [location.pathname], isAuthenticated, isLoading, navigate);
+
+  }, [location.pathname,isAuthenticated, isLoading]);
 
   if(isLoading){
     return (
-      <h1 className='text-center'>Autenticando...</h1>  
+      <h1 className='text-center'>Autenticando...</h1>
     )
   }
 
