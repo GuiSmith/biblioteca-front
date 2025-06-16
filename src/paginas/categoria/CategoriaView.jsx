@@ -166,7 +166,6 @@ const CategoriaView = () => {
                             : livros.map((livro) => <LivroCartao key={livro.id} livro={livro} nomeCategoria={categoria.nome} />) 
                     }
                 </div>
-                
             </div>
             <ToastContainer position="bottom-right" />
         </article>
