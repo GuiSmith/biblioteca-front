@@ -72,7 +72,7 @@ const EditoraLista = () => {
                             </thead>
                             <tbody>
                                 {editoras.map(editora => (
-                                    <tr key={editora.id} onClick={() => navigate(`/editora/form/${editora.id}`)}>
+                                    <tr key={editora.id} onClick={() => navigate(`/editora/view/${editora.id}`)}>
                                         {Object.keys(colunas).map((coluna, index) => (
                                             <td key={index}>
                                                 {formatCell(coluna, editora[coluna])}
