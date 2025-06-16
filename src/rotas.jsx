@@ -6,7 +6,7 @@ import { EditoraLista, EditoraRegistro } from './paginas/editora';
 import { EmprestimoRegistro } from './paginas/emprestimo';
 
 const rotas = [
-	{ auth: true, path: '/', element: <LivroLista /> },
+	{ auth: false, path: '/', element: <LivroLista /> },
 	{ auth: false, path: '/livros', element: <LivroLista /> },
 	{ auth: false, path: '/livro/view/:id', element: <LivroView/> },
 	{ auth: true, path: '/livro/form/:id', element: <LivroRegistro /> },
@@ -14,7 +14,7 @@ const rotas = [
 	{ auth: false, path: '/categorias', element: <CategoriaLista /> },
 	{ auth: true, path: '/categoria/form/novo', element: <CategoriaRegistro /> },
 	{ auth: true, path: '/categoria/form/:id', element: <CategoriaRegistro /> },
-	{ auth: true, path: '/categoria/view/:id', element: <CategoriaView /> },
+	{ auth: false, path: '/categoria/view/:id', element: <CategoriaView /> },
 	{ auth: false, path: '/login', element: <Login />},
 	{ auth: true, path: '/usuarios', element: <UsuarioLista /> },
 	{ auth: true, path: '/usuario/view/:id', element: <UsuarioView /> },
