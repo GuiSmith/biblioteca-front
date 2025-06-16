@@ -33,7 +33,7 @@ const Login = () => {
 
             if (response.status == 200) {
 
-                handleLoginSuccess({ token: responseData.token, authType });
+                handleLoginSuccess({ token: responseData.token, newAuthType: authType });
                 toast.success('Login realizado');
                 navigate('/');
 

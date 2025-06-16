@@ -6,6 +6,7 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [contextAuthType, setContextAuthType] = useState('');
 
   // Checa a autenticação na montagem inicial (uma vez)
   useEffect(() => {
@@ -25,21 +26,23 @@ export const AuthProvider = ({ children }) => {
 
   // Funções simples para ATUALIZAR o estado do contexto
   // As chamadas à API são feitas nas páginas de Login/Logout
-  const handleLoginSuccess = ({ token, authType }) => {
+  const handleLoginSuccess = ({ token, newAuthType }) => {
     setIsAuthenticated(true);
     API.setToken(token);
-    API.setAuthType(authType);
+    API.setAuthType(newAuthType);
+    setContextAuthType(newAuthType);
   };
 
   const handleLogoutSuccess = () => {
     setIsAuthenticated(false);
     API.setToken(''); // Limpa o token no serviço de API
     API.setAuthType(''); // Limpa o tipo de autenticação
+    setContextAuthType('');
     // O redirecionamento seria feito no componente que chama handleLogoutSuccess
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, isLoading, handleLoginSuccess, handleLogoutSuccess }}>
+    <AuthContext.Provider value={{ isAuthenticated, isLoading, contextAuthType, handleLoginSuccess, handleLogoutSuccess }}>
       {children}
     </AuthContext.Provider>
   );
