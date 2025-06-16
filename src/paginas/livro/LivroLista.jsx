@@ -105,7 +105,7 @@ const LivroLista = () => {
             {/* Ações */}
             <div className='mb-3 d-flex flex-wrap justify-content-start gap-3'>
                 {botoes && (
-                    botoes.map((botao,index) => (!botao.auth || (botao.auth && isAuthenticated && contextAuthType == 'funcionario')) ? <span key={index}>{botao}</span> : '')
+                    botoes.map((botao,index) => (!botao.auth || (botao.auth && isAuthenticated && contextAuthType == 'funcionario')) ? <span key={index}>{botao.jsx}</span> : '')
                 )}
             </div>
             {/* Filtros */}
