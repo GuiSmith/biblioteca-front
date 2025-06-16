@@ -16,7 +16,7 @@ const CategoriaLista = () => {
 
     const [categorias, setCategorias] = useState([]);
     const navigate = useNavigate();
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, contextAuthType } = useAuth();
 
     const colunas = {
         id: 'ID',
@@ -56,7 +56,7 @@ const CategoriaLista = () => {
             <h1 className="text-center">Categorias</h1>
             <div className="d-flex flex-wrap justify-content-start gap-2 mb-3 mt-3">
                 {botoes && (
-                    botoes.map((botao,index) => (!botao.auth || (botao.auth && isAuthenticated)) ? <span key={index}>{botao.jsx}</span> : '')
+                    botoes.map((botao,index) => (!botao.auth || (botao.auth && isAuthenticated && contextAuthType == 'funcionario')) ? <span key={index}>{botao.jsx}</span> : '')
                 )}
             </div>
             <article className="table-container table-responsive">

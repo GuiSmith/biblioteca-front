@@ -23,7 +23,7 @@ const CategoriaView = () => {
 
     const endpoint = `categoria`;
     const navigate = useNavigate();
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, contextAuthType } = useAuth();
 
     const [categoria, setCategoria] = useState({});
     const [livros, setLivros] = useState(null);
@@ -150,7 +150,7 @@ const CategoriaView = () => {
                 <p style={{ textAlign: 'justify', textIndent: '1rem' }}>{categoria.descricao}</p>
                 <div className="d-flex flex-wrap justify-content-start gap-2">
                     {botoes && (
-                        botoes.map((botao,index) => (!botao.auth || (botao.auth && isAuthenticated)) ? <span key={index}>{botao.jsx}</span> : '')
+                        botoes.map((botao,index) => (!botao.auth || (botao.auth && isAuthenticated && contextAuthType == 'funcionario')) ? <span key={index}>{botao.jsx}</span> : '')
                     )}
                     {/* {botoes.map(botao => botao.jsx)} */}
                 </div>
