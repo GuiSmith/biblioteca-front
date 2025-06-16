@@ -3,6 +3,9 @@ import { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { useParams, useNavigate } from 'react-router-dom';
 
+// Contextos
+import { useAuth } from '@contextos/AuthContexto';
+
 //Serviços
 import API from '@servicos/API';
 import { listarAutores } from '@servicos/livroAutor';
@@ -26,6 +29,7 @@ const LivroView = () => {
 	const endpoint = `livro/${id}/exemplares`;
 	const completeUrl = `${API.apiUrl}/${endpoint}`;
 	const apiOptions = API.apiOptions('GET');
+	const { isAuthenticated, contextAuthType } = useAuth();
 
 	const [livro, setLivro] = useState(null);
 	const [exemplares, setExemplares] = useState([]);
@@ -118,6 +122,25 @@ const LivroView = () => {
 		}
 	};
 
+	const botoes = [
+		{
+			auth: true,
+			jsx: <BotaoLink label='Novo' to='/livro/form/novo' className='btn-primary' />
+		},
+		{
+			auth: true,
+			jsx: livro ? <BotaoLink label='Editar' to={`/livro/form/${livro.id}`} className='btn-dark' /> : ''
+		},
+		{
+			auth: false,
+			jsx: <BotaoLink label='Listar' to='/livros' className='btn-secondary' />
+		},
+		{
+			auth: true,
+			jsx: <button type='button' className='btn btn-danger' onClick={handleDelete}>Deletar</button>
+		}
+	];
+
 	return (
 		<article className='container'>
 			<div className='alert alert-primary text-dark p-3'>
@@ -137,13 +160,9 @@ const LivroView = () => {
 						</p>
 						<hr />
 						<div className='d-flex flex-wrap justify-content-start gap-2'>
-							<BotaoLink label='Novo' to='/livro/form/novo' className='btn-primary' />
-							
-							<BotaoLink label='Editar' to={`/livro/form/${livro.id}`} className='btn-dark' />
-
-							<BotaoLink label='Listar' to='/livros' className='btn-secondary' />
-							
-							<button type='button' className='btn btn-danger' onClick={handleDelete}>Deletar</button>
+							{botoes && livro && (
+								botoes.map((botao,index) => (!botao.auth || (botao.auth && isAuthenticated && contextAuthType == 'funcionario')) ? <span key={index}>{botao.jsx}</span> : '')
+							)}
 						</div>
 					</>
 				)}

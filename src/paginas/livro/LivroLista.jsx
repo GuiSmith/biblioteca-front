@@ -2,6 +2,9 @@
 import { ToastContainer, toast } from 'react-toastify';
 import { useEffect, useState } from 'react';
 
+// Contextos
+import { useAuth } from '@contextos/AuthContexto';
+
 //Serviços
 import API from '@servicos/API';
 
@@ -15,6 +18,7 @@ const LivroLista = () => {
     const [livros, setLivros] = useState([]);
     const [livrosFiltrados, setLivrosFiltrados] = useState([]);
     const [idCategoriaSelecionada, setIdCategoriaSelecionada] = useState(0);
+    const { isAuthenticated, contextAuthType } = useAuth();
 
     // Categorias
     useEffect(() => {
@@ -88,12 +92,21 @@ const LivroLista = () => {
         }
     }
 
+    const botoes = [
+        {
+            auth: true,
+            jsx: <BotaoLink to='/livro/form/novo' label='Novo' className='btn-primary' />
+        }
+    ];
+
     return (
         <article className='container-fluid'>
             <h1 className='text-center'>Livros</h1>
             {/* Ações */}
             <div className='mb-3 d-flex flex-wrap justify-content-start gap-3'>
-                <BotaoLink to='/livro/form/novo' label='Novo' className='btn-primary' />
+                {botoes && (
+                    botoes.map((botao,index) => (!botao.auth || (botao.auth && isAuthenticated && contextAuthType == 'funcionario')) ? <span key={index}>{botao}</span> : '')
+                )}
             </div>
             {/* Filtros */}
             <div className='mb-3 d-flex flex-wrap justify-content-center gap-2'>
