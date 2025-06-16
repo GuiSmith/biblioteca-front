@@ -151,7 +151,7 @@ const CategoriaView = () => {
             {/* Livros */}
             <div className="">
                 <h2 className="text-center">Livros</h2>
-                <div className="d-flex flex-wrap justify-content-center gap-3">
+                <div className="d-flex flex-wrap justify-content-start gap-3">
                     {livros == null
                         ? <p>Carregando...</p>
                         : livros.length === 0
