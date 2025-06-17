@@ -14,6 +14,7 @@ export const AuthProvider = ({ children }) => {
       try {
         const authStatus = await API.auth(); // Sua função de checagem na API
         setIsAuthenticated(authStatus);
+        setContextAuthType(authStatus ? await API.getAuthType() : '');
       } catch (error) {
         console.error('Erro ao verificar autenticação:', error);
         setIsAuthenticated(false);
