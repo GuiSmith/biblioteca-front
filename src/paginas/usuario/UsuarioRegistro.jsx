@@ -4,6 +4,9 @@ import { ToastContainer, toast } from "react-toastify";
 import { useEffect } from "react";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 
+// Contextos
+import { useAuth } from '@contextos/AuthContexto';
+
 // Serviços
 import API from "@servicos/API";
 
@@ -25,6 +28,7 @@ const UsuarioRegistro = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const params = useParams();
+    const { isAuthenticated } = useAuth();
 
     const { register, handleSubmit, reset, watch } = useForm({ defaultValues });
 
@@ -98,6 +102,9 @@ const UsuarioRegistro = () => {
                 // OK
                 if (responsePost.status == 201) {
                     toast.success('Usuário criado com sucesso');
+                    if(!isAuthenticated){
+                        navigate('/login');
+                    }
                 }
 
                 // Erro
@@ -139,10 +146,12 @@ const UsuarioRegistro = () => {
                     <input type="text" className="form-control" id="id" {...register("id")} disabled />
                 </div>
                 {/* Ativo */}
-                <div className="mb-3 form-check form-switch">
+                {watch('id') && (
+                    <div className="mb-3 form-check form-switch">
                     <label htmlFor="ativo" className='form-check-label'>Ativo</label>
                     <input type="checkbox" id='ativo' className='form-check-input' {...register('ativo')} defaultChecked={true} />
                 </div>
+                )}
                 {/* Nome */}
                 <div className="mb-3">
                     <label htmlFor="nome" className="form-label">
