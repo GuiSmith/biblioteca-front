@@ -101,7 +101,7 @@ const LivroLista = () => {
 
     return (
         <article className='container-fluid'>
-            <h1 className='text-center'>Livros</h1>
+            <h2 className='text-center'>Livros</h2>
             {/* Ações */}
             <div className='mb-3 d-flex flex-wrap justify-content-start gap-3'>
                 {botoes && (

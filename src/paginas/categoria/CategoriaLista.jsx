@@ -53,7 +53,7 @@ const CategoriaLista = () => {
 
     return (
         <section className="container-fluid">
-            <h1 className="text-center">Categorias</h1>
+            <h2 className="text-center">Categorias</h2>
             <div className="d-flex flex-wrap justify-content-start gap-2 mb-3 mt-3">
                 {botoes && (
                     botoes.map((botao,index) => (!botao.auth || (botao.auth && isAuthenticated && contextAuthType == 'funcionario')) ? <span key={index}>{botao.jsx}</span> : '')
