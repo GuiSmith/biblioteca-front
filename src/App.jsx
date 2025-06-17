@@ -27,11 +27,21 @@ function App() {
   useEffect(() => {
 
     if (isLoading) return;
-
     const rotaAtual = rotas.find(rota => {
-      // Converte o path da rota em uma expressão regular para lidar com parâmetros
-      const regexPath = new RegExp(`^${rota.path.replace(/:\w+/g, '[^/]+')}$`);
-      return regexPath.test(location.pathname);
+      // Comparação direta se não tiver números
+      if (!/\d/.test(location.pathname)) return rota.path === location.pathname;
+
+      // Verificação com parâmetros tipo :id
+      const pathParts = rota.path.split('/');
+      const locParts = location.pathname.split('/');
+
+      // Tamanhos diferentes? Já era
+      if (pathParts.length !== locParts.length) return false;
+
+      // Checa cada segmento
+      return pathParts.every((segment, i) =>
+        segment.startsWith(':') || segment === locParts[i]
+      ) ? rota : false;
     });
 
     if (rotaAtual && rotaAtual.auth && !isAuthenticated) {
@@ -39,9 +49,9 @@ function App() {
       navigate('/login');
     }
 
-  }, [location.pathname,isAuthenticated, isLoading]);
+  }, [location.pathname, isAuthenticated, isLoading]);
 
-  if(isLoading){
+  if (isLoading) {
     return (
       <h1 className='text-center'>Autenticando...</h1>
     )
