@@ -72,14 +72,21 @@ const BarraDeNavegacao = () => {
                     </ul>
                     <ul className="navbar-nav ms-auto">
                         {!isAuthenticated ?
-                            <li className="nav-item">
-                                <NavLink to="/login" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} >
-                                    Entrar
-                                </NavLink>
-                            </li>
+                            <>
+                                <li className='nav-item'>
+                                    <NavLink to='/usuario/form/novo' className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
+                                        Registrar-se
+                                    </NavLink>
+                                </li>
+                                <li className="nav-item">
+                                    <NavLink to="/login" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} >
+                                        Entrar
+                                    </NavLink>
+                                </li>
+                            </>
                             :
                             <li className='nav-item'>
-                                <NavLink to='/logout' className={({isActive}) => `nav-link ${isActive ? 'active' : ''}`}>
+                                <NavLink to='/logout' className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
                                     Sair
                                 </NavLink>
                             </li>
