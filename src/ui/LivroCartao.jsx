@@ -23,7 +23,7 @@ const LivroCartao = ({ livro = {}, nomeCategoria = '' }) => {
                     <p>{nomeCategoria}</p>
                     <div className='d-flex flex-wrap justify-content-around gap-2'>
                         <BotaoLink label='Detalhes' to={`/livro/view/${livro.id}`} className='btn-dark' />
-                        <BotaoLink label='Emprestar' to = '/' className='btn-success' />
+                        <BotaoLink label='Emprestar' to = '/emprestimo/form/novo' className='btn-success' state={{ livro }}/>
                     </div>
                 </div>
             </div>

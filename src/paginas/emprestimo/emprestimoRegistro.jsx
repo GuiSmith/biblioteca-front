@@ -1,7 +1,7 @@
 // Bibliotecas
 import { useForm } from 'react-hook-form';
 import { ToastContainer, toast } from 'react-toastify';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 
 // Serviços
@@ -9,6 +9,7 @@ import API from '@servicos/API';
 
 // Componentes
 import BotaoLink from '@componentes/BotaoLink';
+import CampoRegistro from '@ui/CampoRegistro';
 
 const EmprestimoRegistro = () => {
     const defaultValues = {
@@ -27,6 +28,10 @@ const EmprestimoRegistro = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const params = useParams();
+
+    const [usuario,setUsuario] = useState(undefined);
+    const [exemplar,setExemplar] = useState(undefined);
+    const [reserva,setReserva] = useState();
 
     const { register, handleSubmit, reset, watch } = useForm({ ...defaultValues });
 
@@ -51,7 +56,6 @@ const EmprestimoRegistro = () => {
                 }
 
                 if (responseEmprestimo.ok === true) {
-                    console.log(responseEmprestimo);
                     reset(responseEmprestimo.data);
                 }
             })
@@ -90,6 +94,33 @@ const EmprestimoRegistro = () => {
             toast.error('Erro ao excluir empréstimo');
         }
     }
+
+    // Carregando usuário
+    useEffect(() => {
+        if(!watch('id_usuario')) return;
+
+        API.selecionar('usuario', watch('id_usuario'))
+            .then(res => {
+                if(res.ok){
+                    setUsuario(res.data);
+                    return;
+                }
+                if(res.error){
+                    toast.error('Erro ao buscar usuário');
+                    setUsuario(undefined);
+                    return;
+                }
+                if(!res.ok && !res.error){
+                    toast.warning(res.mensagem);
+                    setUsuario(undefined);
+                    return;
+                }
+            })
+            .catch(error => {
+                toast.error('Erro ao buscar usuário');
+                console.error('Erro ao buscar usuário',error);
+            });
+    },[watch('id_usuario')]);
 
     const onSubmit = async (data) => {
         console.log(data);
@@ -131,24 +162,49 @@ const EmprestimoRegistro = () => {
                 {/* ID Usuário */}
                 <div className='mb-3'>
                     <label htmlFor='id_usuario' className='form-label'>ID Usuário</label>
-                    <input type='number' className='form-control' id='id_usuario' {...register('id_usuario')} />
+                    <CampoRegistro
+                        idProps={{
+                            id: 'id_usuario',
+                            ...register('id_usuario')
+                        }}
+                        textoProps={{
+                            id: 'usuario_nome',
+                            value: usuario && usuario.hasOwnProperty('nome') ? usuario.nome : ''
+                        }}
+                    />
                 </div>
                 {/* ID Reserva */}
                 <div className='mb-3'>
                     <label htmlFor='id_reserva' className='form-label'>ID Reserva</label>
-                    <input type='number' className='form-control' id='id_reserva' {...register('id_reserva')} />
+                    <CampoRegistro
+                        idProps={{
+                            id: 'id_reserva',
+                            ...register('id_reserva')
+                        }}
+                        textoProps={{
+                            id: 'reserva_nome'
+                        }}
+                    />
                 </div>
                 {/* ID Exemplar */}
                 <div className='mb-3'>
                     <label htmlFor='id_exemplar' className='form-label'>ID Exemplar</label>
-                    <input type='number' className='form-control' id='id_exemplar' {...register('id_exemplar')} />
+                    <CampoRegistro
+                        idProps={{
+                            id: 'id_exemplar',
+                            ...register('id_exemplar')
+                        }}
+                        textoProps={{
+                            id: 'exemplar_nome'
+                        }}
+                    />
                 </div>
-                {/* Status */}
                 <div className='mb-3'>
                     <label htmlFor='status' className='form-label'>Status</label>
                     <input type="text" className='form-control' id='status' {...register('status')} />
                 </div>
             </form>
+            <ToastContainer position ="bottom-right"/>
         </article>
     );
 };
