@@ -17,7 +17,7 @@ const UsuarioRegistro = () => {
 
     const defaultValues = {
         id: '',
-        ativo: true,
+        ativo: '',
         nome: '',
         cpf: '',
         email: '',

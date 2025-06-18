@@ -16,7 +16,7 @@ const LivroRegistro = () => {
 
 	const defaultValues = {
 		id: '',
-		ativo: true,
+		ativo: '',
 		titulo: '',
 		id_categoria: '',
 		sinopse: '',
