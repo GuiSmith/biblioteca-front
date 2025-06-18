@@ -148,6 +148,12 @@ const rotas = [
 	},
 	{
 		auth: true,
+		path: '/emprestimo/form/novo',
+		element: <EmprestimoRegistro />,
+		authTypes: [],
+	},
+	{
+		auth: true,
 		path: '/emprestimo/form/:id',
 		element: <EmprestimoRegistro />,
 		authTypes: []
