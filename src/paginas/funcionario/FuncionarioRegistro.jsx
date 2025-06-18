@@ -15,7 +15,7 @@ const FuncionarioRegistro = () => {
     
     const defaultValues = {
         id: '',
-        ativo: true,
+        ativo: '',
         nome: '',
         cpf: '',
         email: '',
