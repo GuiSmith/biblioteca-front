@@ -46,7 +46,6 @@ function App() {
 
     if (rotaAtual && rotaAtual.auth) {
       if (isAuthenticated) {
-        console.log(rotaAtual, contextAuthType);
         if (rotaAtual.authTypes.length > 0 && !rotaAtual.authTypes.includes(contextAuthType)){
           toast.warn('Somente usuários autorizados!');
           navigate('/');
